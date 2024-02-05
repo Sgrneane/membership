@@ -1,0 +1,9 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/kantggjb/oms/ 
+    - /bin/cp -r account $DEPLOYPATH
+    - /bin/cp -r management $DEPLOYPATH
+    - /bin/cp -r events $DEPLOYPATH
+    - /bin/cp -r notification $DEPLOYPATH
+    - /bin/cp -r static $DEPLOYPATH
+    - /bin/cp -r templates $DEPLOYPATH
