@@ -1,6 +1,6 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/kantggjb/oms/ 
+    - export DEPLOYPATH=/home/kantggjb/membership/ 
     - /bin/cp -r account $DEPLOYPATH
     - /bin/cp -r management $DEPLOYPATH
     - /bin/cp -r events $DEPLOYPATH
