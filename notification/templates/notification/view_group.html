@@ -1,0 +1,90 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                    arrow_back_ios
+                                </span>
+                            </div>Notification Group <span style="color: #808080; margin-left: 5px;"> > {{ group.name}}
+                                > View</span>
+                        </a>
+                    </div>
+
+
+                    <div class="content-container mt-4">
+                        <h3 class="form-title">{{ group.name }}'s Group Details</h3>
+                        <hr>
+
+                        <div class="detail-container">
+                            <h2 class="detail-title">Group Details</h2>
+
+                            <div class="row mb-3 mt-4">
+                                <div class="col-md-4">
+                                    <label class="form-label cm">Group name</label>
+                                    <p class="data">{{ group.name }}</p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label cm">Created at</label>
+                                    <p class="data">{{ group.created_at }}</p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label cm">Member count</label>
+                                    <p class="data">{{ group.users.count }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">Group description</label>
+                                    <p class="data">{{ group.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-container mt-5">
+                            <h2 class="detail-title">Members List</h2>
+                            <div class="row mb-3 mt-4">
+                                <div class="col-md-12">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No.</th>
+                                                <th>Full Name</th>
+                                                <th>Email Address</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for member in group.users.all %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ member.full_name }}</td>
+                                                <td>{{ member.email }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+
+            </div>
+{% endblock %}

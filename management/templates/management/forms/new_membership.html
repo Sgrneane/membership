@@ -1,0 +1,72 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span>
+                            </div>New membership <span style="color: #808080; margin-left: 5px;"> > Types</span>
+                        </a>
+                    </div>
+
+
+
+                    <div class="row row-cols-1 row-cols-md-4 g-4 mt-4">
+                        <div class="col">
+                          <div class="card h-100">
+                            <div class="card-body membership-card">
+                              <span class="material-symbols-outlined">credit_card</span>
+                              <h5 class="form-title">General Membership</h5>
+                              <p class="card-text">First time registration fee: NRs. 2,000 and annual renewal fee: NRs. 1,000</p>
+                            </div>
+                            <div class="card-footer text-end">
+                                <a href="{% url 'management:general_membership_personal' %}" class="btn btn-apply">Apply now</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="card h-100">
+                            <div class="card-body membership-card">
+                              <span class="material-symbols-outlined">credit_card_heart</span>
+                              <h5 class="form-title">Lifetime Membership</h5>
+                              <p class="card-text">Registration fee: NRs. 10,000</p>
+                            </div>
+                            <div class="card-footer text-end">
+                                <a href="{% url 'management:lifetime_membership_personal' id=3 %}" class="btn btn-apply">Apply now</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="card h-100">
+                            <div class="card-body membership-card">
+                              <span class="material-symbols-outlined">school</span>
+                              <h5 class="form-title">Student Membership</h5>
+                              <p class="card-text">First time registration fee: NRs. 1,000 and annual renewal fee: NRs. 500</p>
+                            </div>
+                            <div class="card-footer text-end">
+                                <a href="{% url 'management:student_membership_personal' %}" class="btn btn-apply">Apply now</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="card h-100">
+                            <div class="card-body membership-card">
+                              <span class="material-symbols-outlined">maps_home_work</span>
+                              <h5 class="form-title">Institutional Membership</h5>
+                              <p class="card-text">First time registration fee: NRs. 1,00,000 and annual renewal fee: NRs. 10,000</p>
+                            </div>
+                            <div class="card-footer text-end">
+                                <a href="{% url 'management:institutional_membership_details'%}" class="btn btn-apply">Apply now</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+                
+            </div>
+{% endblock %}

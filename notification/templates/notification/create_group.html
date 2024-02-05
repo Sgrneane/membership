@@ -1,0 +1,68 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+               {% block form %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>Notification <span style="color: #808080; margin-left: 5px;"> > Create group</span></a>
+                    </div>
+                    <div class="multilevel-form">
+                        <form action ={% url 'notification:create_group' %} method='post'>
+                            {% csrf_token %}
+                            <div class="step" id="step1">
+                                <h3 class="form-title">Create notification group</h3>
+                                <hr>
+            
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Group name <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter group name" name='name' {% if form.name.value %} value={{ form.name.value }}{% endif %} {% if group %}%value={{ group.name }}{% endif %}required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Group description</label>
+                                        <textarea class="form-control cm" placeholder="Enter group description" rows="5" name='description'>{% if form.name.value %}{{ form.description.value }}{% endif %}{% if group %}{{ group.description }} {% endif %} </textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Select contacts <span class="required-text">*</span></label>
+                                        <select class="contact-list js-states form-control cm" name="users" multiple="multiple">
+                                            {% for user in all_users %}
+                                            <option value="{{ user.id }}" {% if group %} {% if user.id in group.users.all %}selected{% endif %} {% endif %}>{{ user.email }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">Create Group</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                {% endblock %}
+                
+            </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".contact-list").select2({
+            placeholder: "Select contacts"
+        });
+    }); 
+</script>
+{% endblock %}

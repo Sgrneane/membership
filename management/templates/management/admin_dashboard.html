@@ -1,0 +1,134 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="{% url 'management:user_dashboard'%}">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>Back to home</a>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="db-data-container">
+                                <h2 class="form-title">Membership Request</h2>
+                                <hr>
+                                <div class="row row-cols-1 row-cols-md-2 g-4">
+                                    <div class="col">
+                                     <a href="{% url 'management:view_general_membership_list' %}">
+                                      <div class="card h-100 request-card">
+                                        <div class="card-body">
+                                          <p>{{ general_membership_count }}</p>
+                                          <h5>General Membership</h5>
+                                        </div>
+                                      </div>
+                                     </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="{% url 'management:view_lifetime_membership_list' %}">
+                                            <div class="card h-100 request-card">
+                                              <div class="card-body">
+                                                <p>{{ lifetime_membership_count }}</p>
+                                                <h5>Lifetime Membership</h5>
+                                              </div>
+                                            </div>
+                                           </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="{% url 'management:view_student_membership_list' %}">
+                                            <div class="card h-100 request-card">
+                                              <div class="card-body">
+                                                <p>{{ student_membership_count }}</p>
+                                                <h5>Student Membership</h5>
+                                              </div>
+                                            </div>
+                                           </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="{% url 'management:view_institutional_membership_list' %}">
+                                            <div class="card h-100 request-card">
+                                              <div class="card-body">
+                                                <p>{{ institutional_membership_count }}</p>
+                                                <h5>Institutional Membership</h5>
+                                              </div>
+                                            </div>
+                                           </a>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="InvestmentChart db-data-container">
+                                <h5 class="form-title">Payment in accordance to membership type</h5>
+                                <hr>
+                                <div class="row d-flex" style="justify-content: space-between;">
+                                    <div class="col-md-5 chart-info-list">
+                                        <ul class="chart-list">
+                                            <li><span><i class="fa-solid fa-circle me-2" style="color: #f57200;"></i>General Membership</span> <span class="badge text-bg"> {{general_membership_count}}</span></li>
+                                            <li><span><i class="fa-solid fa-circle me-2" style="color: #1467eb;"></i>Student Membership</span><span class="badge text-bg">{{ student_membership_count}}</span></li>
+                                            <li><span><i class="fa-solid fa-circle me-2" style="color: #00a5e0;"></i>Lifetime Membership</span><span class="badge text-bg">{{lifetime_membership_count}}</span></li>
+                                            <li><span><i class="fa-solid fa-circle me-2" style="color: #033686;"></i>Institutional Membership</span><span class="badge text-bg">{{ institutional_membership_count}}</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-7" style="display: flex; justify-content: center; align-items: center;">
+                                        <canvas id="productChart" style="width: 350px!important; height: 350px!important;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    
+
+                </div>
+                
+            </div>
+ {% endblock %}
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  var xValues = ["General Membership", "Student Membership", "Lifetime Membership", "Institutional Membership"];
+  var yValues = [{{ general_membership_count }} , {{ student_membership_count }}, {{ lifetime_membership_count }}, {{ institutional_membership_count }}];
+  var barColors = [
+    "#f57200",
+    "#1467eb",
+    "#00a5e0",
+    "#033686",
+  ];
+
+  new Chart("productChart", {
+    type: "pie",
+    data: {
+    //   labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+      }]
+    },
+    options: {
+      legend: {
+        labels: {
+          fontFamily: "Poppins, sans-serif"
+        }
+      },
+      title: {
+        display: false,
+        text: "Investment",
+        fontFamily: "Poppins, sans-serif"
+      },
+      tooltips: {
+        titleFontFamily: "Poppins, sans-serif",
+        bodyFontFamily: "Poppins, sans-serif"
+      }
+    }
+  });
+</script>
+{% endblock %}

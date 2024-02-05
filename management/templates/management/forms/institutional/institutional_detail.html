@@ -1,0 +1,85 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>New Membership <span style="color: #808080; margin-left: 5px;"> > Institutional</span></a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        {% block steps %}
+                        {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="row">
+                                <div class="alert alert-danger">
+                                    {{ error|escape }}
+                                    </div>
+                            </div>
+                                
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="row">
+                            <div class="alert alert-danger">
+                                {{ error|escape }}
+                                </div>
+                        </div>
+                        
+                        {% endfor %}
+                        {% endif %}
+                        <form id="twoStepForm" method='post' action={% url 'management:institutional_membership_details'%}>
+                            {% csrf_token %}
+                            <!-- Step 1 -->
+                            <div class="step" id="step1">
+                                <h3 class="form-title">Institutional Information</h3>
+                                <hr>
+            
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Company name <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter company name" name='company_name' required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Company address <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter company address" name='company_address' required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Registration no. <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter registration number" name='registration_no' required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Website</label>
+                                        <input type="text" class="form-control cm" placeholder="Enter website url" name='website'>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Contact person <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter contact person name" name='contact_person' required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Contact number <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter contact number" name='contact_number' required>
+                                    </div>
+                                </div>            
+                                
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                        {% endblock %}
+                    </div>
+
+                </div>
+                
+            </div>
+{% endblock %}

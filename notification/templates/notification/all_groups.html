@@ -1,0 +1,89 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                    arrow_back_ios
+                                </span>
+                            </div>Notification groups
+                        </a>
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4"
+                        role="alert">
+                        <span class="material-symbols-outlined me-2">
+                            info
+                        </span>
+                        <div>
+                            {{ message|escape }}
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show mt-4"
+                        role="alert">
+                        <span class="material-symbols-outlined me-2">
+                            info
+                        </span>
+                        <div>
+                            {{ message|escape }} Notification mailing group deleted successfully.
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% elif message.tags == 'info' %}
+                    <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show mt-4"
+                        role="alert">
+                        <span class="material-symbols-outlined me-2">
+                            info
+                        </span>
+                        <div>
+                            {{ message|escape }} Notification mailing group updated successfully.
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %} 
+
+                    <div class="row row-cols-1 row-cols-md-4 g-4 mt-4">
+                        {% for group in groups %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body membership-card">
+                                    <span>{{ forloop.counter|stringformat:"02d" }}</span>
+                                    <h5 class="form-title">{{ group.name }}</h5>
+                                    <p class="card-text">{{ group.description }}</p>
+                                </div>
+                                <div class="card-footer d-flex">
+                                    <a href="{% url 'notification:view_group' id=group.id %}" class="btn btn-apply">View Details</a>
+                                    <div class="d-flex kit-action-com">
+                                        <div class="action-btn-pen">
+                                            <a href=""><span class="material-symbols-outlined">
+                                                    edit
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div class="action-btn-dtl">
+                                            <a href="./view.html" target="_blank">
+                                                <span class="material-symbols-outlined">close</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+            </div>
+{% endblock %}
