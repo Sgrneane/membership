@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "account",
     "management",
-    'paypal.standard.ipn',
     'events',
     'notification',
 ]
