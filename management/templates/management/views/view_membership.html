@@ -27,7 +27,7 @@
                         info
                     </span>
                 <div>
-                    You haven't made payment for your membership.<strong><a href ="{% url 'management:payment' id=membership.id%}">Proceed to payment.</a>
+                    You haven't made payment for your membership.<strong><a href ="{% url 'management:payment'%}">Proceed to payment.</a>
                     </storng>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                                 </div>
                             </div>
                         </div>
-                      {% if membership.nationaldocument %}
+
                         <div class="detail-container mt-5">
                             <h2 class="detail-title">National Identity Card Information</h2>
 
@@ -136,9 +136,8 @@
                             </section>
 
                         </div>
-                        {% endif %}
+               
                      
-                        {% if membership.educational_information %}
                         <div class="detail-container mt-5">
                             <h2 class="detail-title">Educational Information</h2>
 
@@ -179,7 +178,7 @@
                             </section>
 
                         </div>
-                        {% endif %}
+                      
 
                         <div class="detail-container mt-5">
                             <h2 class="detail-title">Documents</h2>

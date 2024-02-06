@@ -10,7 +10,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from .models import CustomUser
-from .decorators import is_admin,is_superadmin,is_user
+from .decorators import is_admin,is_superadmin,is_user,authentication_not_required
 from .forms import SignupForm
 
 from .generate_token import generate_unique_four_digit_number
@@ -44,7 +44,7 @@ def signup(request):
 
 #Activate user Email Verification
 # def activate(request):
-
+@authentication_not_required
 def login_user(request):
     if(request.method == 'POST'):
         email=request.POST['email']
@@ -80,7 +80,8 @@ class CustomPasswordResetView(PasswordResetView):
             messages.error(self.request, "Email does not exist.")
             return self.form_invalid(form)
         return super().form_valid(form) 
-
+    
+@login_required
 def activate(request):
     """
     User will enter the pin sent to them via email and if the pin is correct user is
@@ -100,7 +101,7 @@ def activate(request):
     else:
         return render(request,'account/verify_user.html')
 
-
+@login_required
 def resend_token(request):
     user=request.user
     if request.method=='POST':
@@ -119,7 +120,7 @@ def resend_token(request):
             return redirect('account:resend_token')
     return render(request,'account/resend_token.html')
 
-
+@login_required
 def my_account(request):
     user=request.user
     membership= Membership.objects.select_subclasses().get(associated_user=user)

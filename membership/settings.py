@@ -168,8 +168,8 @@ AUTHENTICATION_BACKENDS = [
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'complain.dftqc@gmail.com'
-EMAIL_HOST_PASSWORD = 'irxn zgui zitk nxxk'
+EMAIL_HOST_USER = 'ngeotechs.connect@gmail.com'
+EMAIL_HOST_PASSWORD = 'stfj qaqw pywo liif'
 
 #paypal settings
 PAYPAL_RECEIVER_EMAIL = os.getenv('paypal_receiver_email')
