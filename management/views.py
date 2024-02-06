@@ -104,6 +104,7 @@ def complete_registration_national_document(request,id):
     context={
         'form':form,
         'countries': countries,
+        'membership': member
     }
     return render(request,'management/forms/general_membership/national_document.html',context)
         
@@ -129,6 +130,7 @@ def complete_registration_educational_document(request,id):
         'form':form,
         'countries': countries,
         'degrees':degrees,
+        'member': member,
     }
     return render(request,'management/forms/general_membership/educational_info.html',context)
 
@@ -535,7 +537,10 @@ def rejected_membership_list(request):
 def payment(request):
     """Handles the payment for individual users."""
     user=request.user
-    membership=Membership.objects.select_subclasses().filter(associated_user=user)
+    try:
+        membership= Membership.objects.select_subclasses().get(associated_user=user)
+    except:
+        membership=None
     paid_amount= None
     paid_date =None
     if user.membership.payment.exists():

@@ -41,7 +41,7 @@ class EducationalDocuments(models.Model):
 
 class Membership(models.Model):
     membership_number=models.CharField(max_length=10,unique=True,null=True)
-    associated_user = models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name='membership')
+    associated_user = models.OneToOneField(CustomUser,related_name='membership',on_delete=models.CASCADE,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     verification = models.BooleanField(default=False)

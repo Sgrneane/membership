@@ -13,7 +13,30 @@
                                 Payment</span>
                         </a>
                     </div>
-                    
+                    {% if membership.membership_type == 2%}
+                    {% if  not membership.pan_document %}
+                    <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
+                            <span class="material-symbols-outlined me-2">
+                                info
+                            </span>
+                        <div>
+                           Your registration for membership is not complete.<strong><a href ="{% url 'management:complete_institutional_membership' id=membership.id%}">Click here to Complete your registration.</a>
+                        </storng>
+                        </div>
+                    </div>
+                        {% endif %}
+            {% else %}
+                        {% if not membership.nationaldocument or not membership.educational_information %}
+                        <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
+                            <span class="material-symbols-outlined me-2">
+                                info
+                            </span>
+                            <div>
+                                Your registration for membership is not complete.<strong><a {% if not membership.nationaldocument %}href ="{% url 'management:complete_registration_national_document' id=membership.id %}" {% else %}href ="{% url 'management:complete_registration_educational_document'  id=membership.id %}"{% endif %}>Click here to Complete your registration.</a></strong>
+                            </div>
+                        </div>
+                        {% endif %}
+            {% endif %} 
                     
                     
                     {% if request.user.paid_payment.exists %}
@@ -26,21 +49,6 @@
                                 {% else %}
                                 You've successfully made a payment of <span class="data" style="color: #007ade;">{{ paid_amount }}</span> for a <span class="data" style="color: #007ade;">{{ request.user.membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p>
                                 {% endif %}
-                                
-                                {% if request.user.membership.membership_type == 2%}
-                                    <div>hvfcuyc
-                                    Your registration for membership is not complete.<a href ={% url 'management:complete_institutional_membership' id=request.user.membership.id %}>Click here to Complete your registration.</a>
-                                    </div>
-                                {% else %}
-                                    {% if not membership.nationaldocument or not membership.educational_information %}
-                                    <div>
-                                    Your registration for membership is not complete.<a {% if not membership.nationaldocument %}href ="{% url 'management:complete_registration_national_document' id=request.user.membership.id %}" {% else %}href ="{% url 'management:complete_registration_educational_document'  id=request.membership.id %}"{% endif %}>Click here to Complete your registration.</a>
-                                    </div>
-                                    {% endif %}
-                                {% endif %}
-                            {% if request.user.member.membership_type == 1 or request.user.member.membership_type == 4 %}
-                            <a href="./form.html" class="btn submit-btn mt-2">Upgrade to Lifetime Membership</a>
-                            {% endif %}
                         </div>
                     </div>
                     {% else %}

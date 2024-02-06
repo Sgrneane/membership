@@ -123,7 +123,10 @@ def resend_token(request):
 @login_required
 def my_account(request):
     user=request.user
-    membership= Membership.objects.select_subclasses().get(associated_user=user)
+    try:
+        membership= Membership.objects.select_subclasses().get(associated_user=user)
+    except:
+        membership=None
     context={
         'membership': membership
     }
@@ -132,7 +135,10 @@ def my_account(request):
 @login_required
 def change_password(request):
     user=request.user
-    membership= Membership.objects.select_subclasses().get(associated_user=user)
+    try:
+        membership= Membership.objects.select_subclasses().get(associated_user=user)
+    except:
+        membership=None
     context={
         'membership': membership
     }
