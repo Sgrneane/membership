@@ -10,9 +10,9 @@ class Event(models.Model):
     duration = models.CharField(max_length = 100)
     type = models.IntegerField(choices = ((1,'Virtual'),(2,'Physical')))
     veneu = models.CharField(max_length = 200) #platform
-    url_location = models.CharField(max_length = 200)
+    url_location = models.CharField(max_length = 2000,null=True)
     description = models.CharField(max_length = 2000,default = '')
-    guest_descriotion = models.CharField(max_length = 2000,default = '')
+    guest_description = models.CharField(max_length = 2000,default = '')
     ticket_pricing_description = models.CharField(max_length = 2000,default = '')
     banner = models.ImageField(upload_to='event/banner',null = True)
     created_date = models.DateTimeField(auto_now_add = True)

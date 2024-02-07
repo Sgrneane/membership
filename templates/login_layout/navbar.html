@@ -120,8 +120,8 @@
                             <div id="mail-group" class="accordion-collapse collapse"
                                 data-bs-parent="#mailGroup">
                                 <ul>
-                                    <li><a href="./group.html">All Event</a></li>
-                                    <li><a href="./creategroup.html">Create Event</a></li>
+                                    <li><a href="{% url 'events:all_events' %}">All Event</a></li>
+                                    <li><a href="{% url 'events:eventadd'%}">Create Event</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -150,6 +150,9 @@
                             </div>
                         </div>
                     </div>
+                    <li><a href="#"><span class="material-symbols-rounded me-2">
+                        group
+                        </span>FAQs</a></li>
                     {% endif %}
                     <li><a href={% url 'account:logout_user' %}><span class="material-symbols-rounded me-2">
                         <span class="material-symbols-rounded">

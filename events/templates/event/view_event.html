@@ -1,0 +1,164 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                    arrow_back_ios
+                                </span></div>Events <span style="color: #808080; margin-left: 5px;"> >
+                                View</span>
+                        </a>
+                    </div>
+
+                    <div class="multilevel-form">
+                            <div class="step" id="step1">
+                                <h3 class="form-title">{{ event.name }}</h3>
+                                <hr>
+
+                                <div class="row mb-3 mt-4">
+                                    <div class="col-md-12">
+                                        <p class="data">{{ event.name }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12 event-card">
+                                        <img src="{{ event.banner.url }}" alt="">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Platform or venue</label>
+                                        <p class="data d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">
+                                              {% if event.type == 1 %}dialogs
+                                              {% else %} location_on
+                                              {% endif %}
+                                            </span> {{ event.veneu }}
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Event date</label>
+                                        <p class="data d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">
+                                              calendar_month
+                                            </span> {{ event.date }}
+                                          </p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Event duration</label>
+                                        <p class="data d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">
+                                              pace
+                                            </span>{{ event.duration }}
+                                          </p>
+                                    </div>
+
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Event description</label>
+                                        <p class="card-text event-desc">
+                                           {{ event.description }}
+                                        </p>
+                                    </div> 
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Guest description</label>
+                                        <p class="card-text event-desc">
+                                           {{ event.guest_description }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Teckets or pricing description</label>
+                                        <p class="card-text event-desc">
+                                            {{ event.ticket_pricing_description}}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    {% if event.type == 2 %}
+                                    <div class="col-md-12 map">
+                                        <label class="form-label cm">Venue location</label>
+                                        {{ event.url_location|safe }}
+                                    </div>
+
+                                    {% else %}
+
+                                        <div class="col-md-12">
+                                            <label class="form-label cm">Platform link</label>
+                                            <p class="data d-flex align-items-center">
+                                                <span class="material-symbols-outlined me-2">
+                                                attach_file
+                                                </span><a href=""{{ event.url_location }}""></a> 
+                                            </p>
+                                        </div>        
+                                    </div>
+                                {% endif %}
+
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12 map">
+                                        <label class="form-label cm">Notified groups</label>
+                                        <p class="mt-2">
+                                        {% for group in event.groups.all %}
+                                            <span class="group-badge me-2">{{ group.name }}</span>
+                                        {% endfor %}
+                                        </p>
+                                    </div>       
+                                </div>
+
+
+                                
+                                
+
+
+                                <div class="row mb-3">
+                                        <div class="col-md-8">
+                                            <form action="">
+                                            <label class="form-label cm">Notify other groups </label>
+                                            <select class="contact-list js-states form-control cm" name="groups[]" multiple="multiple">
+                                                {% for group in groups %}
+                                                <option value="all_member">{{ group.name }}</option>
+                                               {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label></label>
+                                            <button class="btn submit-btn w-100">Notify</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $(".contact-list").select2({
+            placeholder: "Select mailing group"
+        });
+    }); 
+</script>
+{% endblock %}

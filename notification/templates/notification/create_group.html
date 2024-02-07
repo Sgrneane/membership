@@ -12,7 +12,11 @@
                                 </span></div>Notification <span style="color: #808080; margin-left: 5px;"> > Create group</span></a>
                     </div>
                     <div class="multilevel-form">
-                        <form action ={% url 'notification:create_group' %} method='post'>
+                        {% if form.instance %}
+                        <form action ="{% url 'notification:edit_group' id=form.instance.id  %}" method='post'>
+                        {% else %}
+                        <form action ="{% url 'notification:create_group'%}" method='post'>
+                        {% endif %}
                             {% csrf_token %}
                             <div class="step" id="step1">
                                 <h3 class="form-title">Create notification group</h3>
@@ -37,14 +41,15 @@
                                         <label class="form-label cm">Select contacts <span class="required-text">*</span></label>
                                         <select class="contact-list js-states form-control cm" name="users" multiple="multiple">
                                             {% for user in all_users %}
-                                            <option value="{{ user.id }}" {% if group %} {% if user.id in group.users.all %}selected{% endif %} {% endif %}>{{ user.email }}</option>
+                                            <option value="{{ user.id }}" {% if form.instance and user in form.instance.users.all %}selected{% endif %}>{{ user.email }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="button-container mt-2 d-flex justify-content-end">
-                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">Create Group</button>
+                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">
+                                        {% if form.instance %}Update{% else %}Create Group{% endif %}</button>
                                 </div>
                             </div>
                         </form>

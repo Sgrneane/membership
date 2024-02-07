@@ -19,8 +19,35 @@ from .custom_decorator import customized_user_passes_test,is_USER_role,is_admin_
 def index(request):
     return render(request,'management/index.html')
 
+
+
 def membership_guidelines(request):
     return render(request,'management/membership_guidelines.html')
+
+
+def general_members(request):
+    student_membership = GeneralMembership.objects.filter(verification=True)
+    context ={
+        'members': student_membership
+    }
+    return render(request,'management/listview/homepage_lists/general_membership_list.html',context)
+
+
+def institutional_members(request):
+    student_membership = InstitutionalMembership.objects.filter(verification=True)
+    context ={
+        'members': student_membership
+    }
+    return render(request,'management/listview/homepage_lists/institutional_membership_list.html',context)
+
+
+def student_members(request):
+    student_membership = StudentMembership.objects.filter(verification=True)
+    context ={
+        'members': student_membership
+    }
+    return render(request,'management/listview/homepage_lists/student_membership_list.html',context)
+
 
 # @customized_user_passes_test(is_USER_role)
 def user_dashboard(request):

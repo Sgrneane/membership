@@ -87,7 +87,7 @@
             </div>
     {% endif %}
 
-    {% if membership.membership_type != 2  or membership.membership_type != 3 %}
+    {% comment %} {% if membership.membership_type != 2  or membership.membership_type != 3 %}
     {% if membership.verification == True %}
         <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert"> 
             <span class="material-symbols-outlined me-2">
@@ -98,7 +98,7 @@
                 </div>
         </div>
     {% endif %}
-    {% endif %}
+    {% endif %} {% endcomment %}
 
 {% else %}
     <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">

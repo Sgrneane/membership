@@ -66,7 +66,7 @@
                                     <a href="{% url 'notification:view_group' id=group.id %}" class="btn btn-apply">View Details</a>
                                     <div class="d-flex kit-action-com">
                                         <div class="action-btn-pen">
-                                            <a href=""><span class="material-symbols-outlined">
+                                            <a href="{% url 'notification:edit_group' id=group.id %}"><span class="material-symbols-outlined">
                                                     edit
                                                 </span>
                                             </a>

@@ -133,4 +133,8 @@ class Payment(models.Model):
             amount_int = int(self.paid_amount_in_paisa)
             rs = amount_int / 100
             return str(int(rs))
+        
+class FAQ(models.Model):
+    question=models.TextField()
+    answer=models.TextField()
 

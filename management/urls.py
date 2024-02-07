@@ -53,4 +53,9 @@ urlpatterns = [
     path('membership/payment-verification',views.payment_verification,name='payment_verification'),
     #resubmit_membership
     path('resubmit-membership/<int:id>',views.resubmit_membership,name='resubmit_membership'),
+
+    #Tabular View Index
+    path('student-members',views.student_members,name='student_members'),
+    path('general-members',views.general_members,name='general_members'),
+    path('institutional-members',views.institutional_members,name='institutional_members'),
 ]

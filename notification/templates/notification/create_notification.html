@@ -10,7 +10,11 @@
                     </div>
 
                     <div class="multilevel-form">
-                        <form method ='post',action={% url 'notification:create_notification' %}>
+                        {% if form.instance %}
+                        <form method ='post',action='{% url 'notification:edit_notification' id=form.instance.id %}'>
+                            {% else %}
+                        <form method ='post', action={% url 'notification:create_notification' %}>
+                            {% endif %}
                             {% csrf_token %}
                             <div class="step" id="step1">
                                 <h3 class="form-title">Create notification mail</h3>
@@ -19,14 +23,14 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <label class="form-label cm">Mail subject <span class="required-text">*</span></label>
-                                        <input type="text" class="form-control cm" placeholder="Enter mail subject" name='subject' required>
+                                        <input type="text" class="form-control cm" placeholder="Enter mail subject" name='subject'{% if form.instance %}value='{{ form.instance.subject }}'{% endif %} required>
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <label class="form-label cm">Mail description</label>
-                                        <textarea class="form-control cm" placeholder="Enter mail description" rows="5" name='description'></textarea>
+                                        <textarea class="form-control cm" placeholder="Enter mail description" rows="5" name='description'>{% if form.instance %}{{ form.instance.description }}{% endif %}</textarea>
                                     </div>
                                 </div>
 
@@ -35,7 +39,7 @@
                                         <label class="form-label cm">Select groups <span class="required-text">*</span></label>
                                         <select class="contact-list js-states form-control cm" name="groups" multiple="multiple">
                                             {% for group in groups %}
-                                            <option value="{{ group.id }}">{{ group.name }}</option>
+                                            <option value="{{ group.id }}" {% if form.instance and group in form.instance.groups.all %}selected{% endif %}>{{ group.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>

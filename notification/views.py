@@ -37,7 +37,10 @@ def create_group(request,id=None):
     if request.method == 'POST':
         if form.is_valid():
             group= form.save()
-            messages.success(request, 'Notification mailing group created successfully.')
+            if id:
+                messages.success(request, 'Notification mailing group updated successfully.')
+            else:
+                messages.success(request, 'Notification mailing group created successfully.')
             return redirect('notification:all_groups')
         else:
             print(form.errors)
@@ -64,9 +67,14 @@ def view_group(request,id):
     }
     return render(request,'notification/view_group.html',context)
 
-def create_notification(request):
-    groups=Groups.objects.all()
-    form = NotificationForm(request.POST or None,request.FILES or None)
+def create_notification(request,id=None):
+    groups = Groups.objects.all()
+    
+    # If id is provided, retrieve the notification instance
+    notification_instance = None
+    if id:
+        notification_instance = get_object_or_404(Notifications, id=id)
+    form = NotificationForm(request.POST or None,request.FILES or None,instance=notification_instance)
     if request.method == 'POST':
         print(request.POST)
         if form.is_valid():
@@ -82,6 +90,19 @@ def create_notification(request):
 
 def all_notifications(request):
     notifications= Notifications.objects.all()
-    return render(request,'notification/all_notifications.html')
+    context={
+        'notifications':notifications,
+    }
+    return render(request,'notification/all_notifications.html',context)
+
+
+def view_notification(request,id):
+    notification_instance = get_object_or_404(Notifications, id=id)
+    context={
+        'notification':notification_instance
+    }
+    return render(request,'notification/view_notification.html',context)
+
+
 
 

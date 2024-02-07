@@ -1,0 +1,124 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="/">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                    arrow_back_ios
+                                </span></div>Events <span style="color: #808080; margin-left: 5px;"> >
+                                Create</span>
+                        </a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        <form id="twoStepForm" method="post" action="{% if event %}{% url 'events:edit_event' id=event.id %} {% else %} {% url 'events:eventadd'%} {% endif %}" enctype="multipart/form-data">
+                           {% csrf_token %}
+                            <div class="step" id="step1">
+                                <h3 class="form-title">Event Information</h3>
+                                <hr>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Event name <span
+                                                class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" name="name" placeholder="Enter event name" {% if form.instance %} value='{{ form.instance.name }}'{% endif %}required >   
+                                    </div> 
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label cm">Event date <span class="required-text">*</span></label>
+                                        <input type="date" class="form-control cm" name="date" placeholder="Enter event date" {% if form.instance %} value='{{ form.instance.date|date:"Y-m-d" }}'{% endif %}required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label cm">Event duration <span
+                                                class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" name="duration" placeholder="Enter event duration (eg. 2 days)"
+                                        {% if form.instance %} value='{{ form.instance.duration }}'{% endif %} required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Event type</label>
+                                        <select class="form-select form-control" name="type">
+                                            <option selected disabled>Select event type</option>
+                                            <option value="1"{% if form.instance and  form.instance.type == 1 %} selected {% endif %}>Virtual Event</option>
+                                            <option value="2"{% if form.instance and  form.instance.type == 2 %} selected {% endif %}>Physical Event</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Platform or venue</label>
+                                        <input type="text" class="form-control cm" name="veneu"
+                                        {% if form.instance %} value='{{ form.instance.veneu }}' {% endif %} placeholder="Enter event platform or venue">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Event url (location or platform)</label>
+                                        <input type="text" class="form-control cm" name="url_location"
+                                        {% if form.instance %} value='{{ form.instance.url_location }}' {% endif %}   placeholder="Enter event url (location or platform)">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Event description <span class="required-text">*</span></label>
+                                        <textarea type="textarea" class="form-control cm"
+                                            placeholder="Enter event description" rows="5" name="description" required>{% if form.instance %} {{ form.instance.description }} {% endif %}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Guest description (if any)</label>
+                                        <textarea type="textarea" class="form-control cm" name="guest_description"
+                                            placeholder="Enter guest description (if any)" rows="2">{% if form.instance %}{{ form.instance.guest_description }} {% endif %}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Tickets or pricing description (if any)</label>
+                                        <textarea type="textarea" class="form-control cm" name="ticket_pricing_description"
+                                            placeholder="Enter tickting or pricing description (if any)" rows="2">{% if form.instance %} {{ form.instance.ticket_pricing_description }} {% endif %}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Event banner</label>
+                                        <input type="file" class="form-control cm" name="banner"
+                                            placeholder="Choose event banner image">
+                                    </div>
+                                </div>
+
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Notify groups <span class="required-text">*</span></label>
+                                        <select class="contact-list js-states form-control cm" name="groups" multiple="multiple">
+                                            {%  for group in groups %}
+                                                <option value="{{group.id}}"{% if form.instance and  group in form.instance.groups.all %}selected{% endif %}>{{group.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="submit-btn btn">{% if form.instance %}Update {% else %}Create Event{% endif %}</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>  
+
+{% endblock %}
