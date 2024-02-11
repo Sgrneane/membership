@@ -6,7 +6,7 @@
                 {% include 'management/topbar.html' %}
                 <div class="main-section-container">
                     <div class="row back-link">
-                        <a href="/">
+                        <a href="#" onclick="history.back()">
                             <div class="icon-box"><span class="material-symbols-outlined">
                                     arrow_back_ios
                                 </span></div>Events <span style="color: #808080; margin-left: 5px;"> >
@@ -47,8 +47,8 @@
                                         <label class="form-label cm">Event type</label>
                                         <select class="form-select form-control" name="type">
                                             <option selected disabled>Select event type</option>
-                                            <option value="1"{% if form.instance and  form.instance.type == 1 %} selected {% endif %}>Virtual Event</option>
-                                            <option value="2"{% if form.instance and  form.instance.type == 2 %} selected {% endif %}>Physical Event</option>
+                                            <option value="1">Virtual Event</option>
+                                            <option value="2">Physical Event</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
@@ -59,7 +59,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label cm">Event url (location or platform)</label>
                                         <input type="text" class="form-control cm" name="url_location"
-                                        {% if form.instance %} value='{{ form.instance.url_location }}' {% endif %}   placeholder="Enter event url (location or platform)">
+                                        {% if event %} value='{{ form.instance.url_location }}' {% endif %}   placeholder="Enter event url (location or platform)">
                                     </div>
                                 </div>
 
@@ -101,7 +101,7 @@
                                         <label class="form-label cm">Notify groups <span class="required-text">*</span></label>
                                         <select class="contact-list js-states form-control cm" name="groups" multiple="multiple">
                                             {%  for group in groups %}
-                                                <option value="{{group.id}}"{% if form.instance and  group in form.instance.groups.all %}selected{% endif %}>{{group.name}}</option>
+                                                <option value="{{group.id}}"{% if event and  group in form.instance.groups.all %}selected{% endif %}>{{group.name}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -110,7 +110,7 @@
 
 
                                 <div class="button-container mt-2 d-flex justify-content-end">
-                                    <button type="submit" class="submit-btn btn">{% if form.instance %}Update {% else %}Create Event{% endif %}</button>
+                                    <button type="submit" class="submit-btn btn">{% if event %}Update {% else %}Create Event{% endif %}</button>
                                 </div>
                             </div>
 

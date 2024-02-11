@@ -1,5 +1,5 @@
 from django import forms
-from .models import StudentMembership,GeneralMembership,InstitutionalMembership,EducationalDocuments, Payment
+from .models import StudentMembership,GeneralMembership,InstitutionalMembership,EducationalDocuments, Payment,FAQ
 from django.contrib.auth.hashers import make_password
 from . import choices
 from datetime import date, timedelta
@@ -165,3 +165,9 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = ["payment_ss"]
+
+
+class FAQForm(forms.ModelForm):
+    class Meta:
+        model=FAQ
+        fields='__all__'

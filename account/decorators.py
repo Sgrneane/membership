@@ -21,7 +21,7 @@ def authentication_not_required(view_func,):
 #decorators to verify whether user types is admin or not
 def is_admin(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.role == 2:
+        if request.user.role == 1:
             return view_func(request, *args, **kwargs)
         else:
             return redirect('account:login')
@@ -48,7 +48,7 @@ def is_superadmin(view_func):
 #decorators to check whether user is normal user or not
 def is_user(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.role == 3:
+        if request.user.role == 2:
             return view_func(request, *args, **kwargs)
         else:
             return redirect('account:login')

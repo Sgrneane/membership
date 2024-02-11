@@ -42,7 +42,7 @@
                 <a class="nav-link" href="{% url 'management:membership_guidelines' %}">Membership</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Events</a>
+                <a class="nav-link" href="{% url 'events:index_all_events' %}">Events</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link auth-btn" href="{% url 'account:login_user' %}">Login</a>
@@ -56,7 +56,7 @@
     </nav>
 
                     <div class=" container about-us-bg my-5 p-5">
-                        <h3 class="form-title">Student member request</h3>
+                        <h3 class="form-title">Student Members</h3>
                         <hr>
 
                         <table id="sampleTable" class="table hover-table" style="width:100%">
@@ -82,14 +82,7 @@
                     </div>
                     
 
-                    
-
-
-
-                </div>
-                
-            </div>
-
+  
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/datetime/1.4.1/js/dataTables.dateTime.min.js"></script> 

@@ -24,10 +24,20 @@ def events_add(request,id=None):
         form = EventForm(request.POST or None,request.FILES or None)
 
     if request.method == 'POST':
-        g=request.POST['groups']
-        print(g)
         if form.is_valid():
+            veneu=request.POST.get('veneu',None)
+            url_location=request.POST.get('url_location',None)
+            description=request.POST.get('description',None)
+            guest_description=request.POST.get('guest_description',None)
+            ticket_pricing_description=request.POST.get('ticket_pricing_description',None)
+
             event = form.save()
+            event.veneu=veneu
+            event.url_location= url_location
+            event.description = description
+            event.guest_description = guest_description
+            event.ticket_pricing_description=ticket_pricing_description
+            event.save()
             return redirect('events:all_events')
         else:
             print(form.errors)
@@ -51,3 +61,16 @@ def view_event(request,id):
         'groups':remaining_groups,
     }
     return render(request,'event/view_event.html',context)
+
+def homepage_view_event(request,id):
+    event= get_object_or_404(Event, id=id)
+    context={
+        'event': event,
+    }
+    return render(request,'event/homepage/view_event.html',context)
+
+def index_all_events(request):
+    data = {
+        'events':Event.objects.all()
+    }
+    return render(request,'event/index_events.html',data)

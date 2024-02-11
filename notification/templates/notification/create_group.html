@@ -6,13 +6,13 @@
                {% block form %}
                 <div class="main-section-container">
                     <div class="row back-link">
-                        <a href="/">
+                        <a href="#" onclick="history.back()">
                             <div class="icon-box"><span class="material-symbols-outlined">
                                 arrow_back_ios
                                 </span></div>Notification <span style="color: #808080; margin-left: 5px;"> > Create group</span></a>
                     </div>
                     <div class="multilevel-form">
-                        {% if form.instance %}
+                        {% if group %}
                         <form action ="{% url 'notification:edit_group' id=form.instance.id  %}" method='post'>
                         {% else %}
                         <form action ="{% url 'notification:create_group'%}" method='post'>
@@ -49,7 +49,7 @@
 
                                 <div class="button-container mt-2 d-flex justify-content-end">
                                     <button type="submit" class="submit-btn btn" onclick="nextStep(this)">
-                                        {% if form.instance %}Update{% else %}Create Group{% endif %}</button>
+                                        {% if form.group %}Update{% else %}Create Group{% endif %}</button>
                                 </div>
                             </div>
                         </form>

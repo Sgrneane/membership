@@ -5,8 +5,12 @@ from . import views
 
 app_name='events'
 urlpatterns = [
-    path('event-list',views.all_events , name="all_events"),
-    path('event-add<int:id>',views.events_add , name="edit_event"),
-    path('event-add',views.events_add , name="eventadd"),
-    path('view-event/<int:id>',views.view_event,name='view_event')
+    path('event-list',views.all_events,name="all_events"),
+    path('event-add<int:id>',views.events_add,name="edit_event"),
+    path('event-add',views.events_add,name="eventadd"),
+    path('view-event/<int:id>',views.view_event,name='view_event'),
+
+    #homepage view of event
+    path('all-events-index',views.index_all_events,name='index_all_events'),
+    path('homepage-view-event/<int:id>',views.homepage_view_event,name='homepage_view_event')
 ]

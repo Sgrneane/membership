@@ -7,7 +7,7 @@
 
                 <div class="main-section-container">
                     <div class="row back-link">
-                        <a href="/">
+                        <a href="#" onclick="history.back()">
                             <div class="icon-box"><span class="material-symbols-outlined">
                                 arrow_back_ios
                                 </span>
@@ -119,7 +119,7 @@
                                                     <td>{{ notification.subject }}</td>
                                                     <td>{% for group in notification.groups.all %}
                                                         {{ group.name }} {% endfor %}</td>
-                                                        <td>{% if notification.status == True %}<div class="verified">Sent</div>{% else %}<div class="rejected"> Draft</div> {%endif%}</td>
+                                                     <td>{% if notification.status == True %}<div class="verified">Sent</div>{% else %}<div class="rejected"> Draft</div> {%endif%}</td>
                                                     <td>{{ notification.created_at }}</td>
                                                     <td>
                                                         <div class="d-flex kit-action-com">

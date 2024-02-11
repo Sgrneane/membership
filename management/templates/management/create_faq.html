@@ -1,0 +1,68 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>Add FAQ <span style="color: #808080; margin-left: 5px;"> > faq</span></a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        {% block steps %}
+                        
+                        {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="row">
+                                <div class="alert alert-danger">
+                                    {{ error|escape }}
+                                    </div>
+                            </div>
+                                
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="row">
+                            <div class="alert alert-danger">
+                                {{ error|escape }}
+                                </div>
+                        </div>
+                        
+                        {% endfor %}
+                    {% endif %}
+                        <form id="twoStepForm" action={% url 'management:create_faq' %} method='post' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- Step 1 -->
+                            <div class="step" id="step1">
+                                <h3 class="form-title">Frequently Asked Question Information</h3>
+                                <hr>
+                                <div class="row mb-3">
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Question <span class="required-text">*</span></label>
+                                        <textarea type="textarea" class="form-control cm" name='question' required></textarea>
+                                    </div>
+                                </div>
+                                    <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Answer <span class="required-text">*</span></label>
+                                        <textarea type="textarea" class="form-control cm" name='answer' required></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">Submit</button>
+                                </div>
+                              </div>
+                        </form>
+                        {% endblock %}
+                    </div>
+
+                </div>
+                
+</div>
+{% endblock %}

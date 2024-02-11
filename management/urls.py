@@ -56,6 +56,12 @@ urlpatterns = [
 
     #Tabular View Index
     path('student-members',views.student_members,name='student_members'),
+    path('lifetime-members',views.lifetime_members,name='lifetime_members'),
     path('general-members',views.general_members,name='general_members'),
     path('institutional-members',views.institutional_members,name='institutional_members'),
+
+
+    ##Faqs
+    path('all-faqs',views.all_faqs,name='all_faqs'),
+    path('create-faq',views.create_faq,name='create_faq'),
 ]

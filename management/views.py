@@ -7,17 +7,23 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from . import forms
-# from paypal.standard.forms import PayPalPaymentsForms
-from .models import (Membership,StudentMembership,GeneralMembership,InstitutionalMembership,EducationalDocuments,Payment,NationalDocumment)
+from .models import (Membership,GeneralMembership,InstitutionalMembership,EducationalDocuments,Payment,NationalDocumment,FAQ)
 from .import choices
 from .currency_converter import currency_rates
 from membership.tasks import send_token_mail
-
-from .custom_decorator import customized_user_passes_test,is_USER_role,is_admin_role,is_all_role
+from django.contrib.auth.decorators import login_required
+from account.decorators import is_user,is_admin
+from events.models import Event
 
 # Create your views here.
 def index(request):
-    return render(request,'management/index.html')
+    events=Event.objects.all()
+    faqs=FAQ.objects.all()
+    context={
+        'events':events,
+        'faqs':faqs
+    }
+    return render(request,'management/index.html',context)
 
 
 
@@ -26,9 +32,16 @@ def membership_guidelines(request):
 
 
 def general_members(request):
-    student_membership = GeneralMembership.objects.filter(verification=True)
+    general_membership = GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True))
     context ={
-        'members': student_membership
+        'members': general_membership
+    }
+    return render(request,'management/listview/homepage_lists/general_membership_list.html',context)
+
+def lifetime_members(request):
+    general_membership = GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True))
+    context ={
+        'members': general_membership
     }
     return render(request,'management/listview/homepage_lists/general_membership_list.html',context)
 
@@ -42,19 +55,19 @@ def institutional_members(request):
 
 
 def student_members(request):
-    student_membership = StudentMembership.objects.filter(verification=True)
+    student_membership = GeneralMembership.objects.filter(Q(membership_type=4),Q(verification=True))
     context ={
         'members': student_membership
     }
     return render(request,'management/listview/homepage_lists/student_membership_list.html',context)
 
 
-# @customized_user_passes_test(is_USER_role)
+@login_required
 def user_dashboard(request):
     user= request.user
     if user.role == 2: 
         general_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True)).count()
-        student_membership_count=StudentMembership.objects.filter(verification=True).count()
+        student_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True)).count()
         lifetime_membership_count=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True)).count()
         institutional_membership_count=InstitutionalMembership.objects.filter(verification=True).count()
         membership=None
@@ -74,7 +87,7 @@ def user_dashboard(request):
         return render(request,'management/user_dashboard.html',context)
     if user.role == 1:
         general_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=False)).count()
-        student_membership_count=StudentMembership.objects.filter(verification=False).count()
+        student_membership_count=GeneralMembership.objects.filter(Q(membership_type=4),Q(verification=False)).count()
         lifetime_membership_count=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=False)).count()
         institutional_membership_count=InstitutionalMembership.objects.filter(verification=False).count()
         context={
@@ -86,10 +99,11 @@ def user_dashboard(request):
         return render(request,'management/admin_dashboard.html',context)
 
 #New membership form
-# @customized_user_passes_test(is_USER_role)
+@is_user
 def new_membership(request):
     return render(request,'management/forms/new_membership.html')
 #General lifetime form
+@is_user
 def general_membership_personal(request, id=None):
     gender = choices.GENDER_CHOICES
     countries = choices.COUNTRY_CHOICES
@@ -113,7 +127,7 @@ def general_membership_personal(request, id=None):
         'countries':countries,
     }
     return render(request,'management/forms/general_membership/membership_info.html',context)
-
+@is_user
 def complete_registration_national_document(request,id):
     member = Membership.objects.select_subclasses().get(id=id)
     form =forms.NationalDocumentForm(request.POST or None, request.FILES or None)
@@ -134,7 +148,9 @@ def complete_registration_national_document(request,id):
         'membership': member
     }
     return render(request,'management/forms/general_membership/national_document.html',context)
-        
+
+
+@is_user       
 def complete_registration_educational_document(request,id):
     countries = choices.COUNTRY_CHOICES
     degrees = choices.DEGREE_TYPES
@@ -163,6 +179,7 @@ def complete_registration_educational_document(request,id):
 
 
 #Student Membership form
+@is_user
 def student_membership_personal(request):
     gender = choices.GENDER_CHOICES
     countries = choices.COUNTRY_CHOICES
@@ -170,7 +187,7 @@ def student_membership_personal(request):
     form = forms.PersonalInfoForm(request.POST or None,request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
-            StudentMembership.objects.create(associated_user = request.user,
+            GeneralMembership.objects.create(associated_user = request.user,
                                              membership_type= 4,
                                              **form.cleaned_data)
             return redirect("management:payment")
@@ -188,6 +205,7 @@ def student_membership_personal(request):
 
 
 #institutional Membership form
+@is_user
 def institutional_membership_details(request):
     form = forms.InstitutionalForm(request.POST or None)
     if request.method == 'POST':
@@ -205,6 +223,8 @@ def institutional_membership_details(request):
     }
     return render(request,'management/forms/institutional/institutional_detail.html',context)
 
+
+@is_user
 def complete_institutional_membership(request,id):
     institutional_membership_instance = Membership.objects.select_subclasses().get(id=id)
     form= forms.InstitutionalDocuments(request.POST or None, request.FILES or None)
@@ -227,7 +247,7 @@ def complete_institutional_membership(request,id):
     return render(request,'management/forms/institutional/documents.html',context)
 
 #view membership list
-# @customized_user_passes_test(is_USER_role)
+@is_admin
 def view_general_membership_list(request):
     general_membership = GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=False))
     context ={
@@ -235,15 +255,15 @@ def view_general_membership_list(request):
     }
     return render(request,'management/listview/general_membership_list.html',context)
 
-
+@is_admin
 def view_student_membership_list(request):
-    student_membership = StudentMembership.objects.filter(verification=False)
+    student_membership = GeneralMembership.objects.filter(Q(membership_type=4),Q(verification=False))
     context ={
         'members': student_membership
     }
     return render(request,'management/listview/student_membership_list.html',context)
 
-
+@is_admin
 def view_lifetime_membership_list(request):
     general_membership = GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=False))
     context ={
@@ -251,6 +271,8 @@ def view_lifetime_membership_list(request):
     }
     return render(request,'management/listview/lifetime_membership_list.html',context)
 
+
+@is_admin
 def view_institutional_membership_list(request):
     institutional_membership = InstitutionalMembership.objects.filter(verification=False)
     context ={
@@ -259,6 +281,7 @@ def view_institutional_membership_list(request):
     return render(request,'management/listview/institutional_membership_list.html',context)
 
 #view membership details
+@login_required
 def view_membership(request,id):
     general_membership_instance= Membership.objects.select_subclasses().get(id=id)
     latest_membership = Membership.objects.filter(verification=True).last()
@@ -295,7 +318,7 @@ def view_membership(request,id):
         else:
              return render(request,'management/views/view_institutional_membership.html',context)
     
-
+@login_required
 def edit_membership(request,id):
     membership_instance= Membership.objects.select_subclasses().get(id=id)
     latest_membership = Membership.objects.filter(verification=True).last()
@@ -319,7 +342,7 @@ def edit_membership(request,id):
             }
         return render(request,'management/views/edit_institutional_membership.html',context)
 
-
+@login_required
 def edit_personal_info(request,id):
     membership_instance = get_object_or_404(Membership.objects.select_subclasses(), id=id)
     gender = choices.GENDER_CHOICES
@@ -351,7 +374,7 @@ def edit_personal_info(request,id):
     }
     return render(request,'management/forms/edit_personal_info.html',context)
             
-
+@login_required
 def edit_educational_info(request,id):
     membership_instance = get_object_or_404(Membership.objects.select_subclasses(), id=id)
     countries = choices.COUNTRY_CHOICES
@@ -384,6 +407,8 @@ def edit_educational_info(request,id):
     }
     return render(request,'management/forms/edit_educational_info.html',context)
 
+
+@login_required
 def edit_national_info(request,id):
     membership_instance = get_object_or_404(Membership.objects.select_subclasses(), id=id)
     gender = choices.GENDER_CHOICES
@@ -417,7 +442,7 @@ def edit_national_info(request,id):
     }
     return render(request,'management/forms/edit_national_info.html',context)
 
-
+@login_required
 def edit_institutional_info(request,id):
     membership_instance = get_object_or_404(Membership.objects.select_subclasses(), id=id)
     form = forms.EditInstitutionalForm(request.POST or None, request.FILES or None)
@@ -441,7 +466,7 @@ def edit_institutional_info(request,id):
     }
     return render(request,'management/forms/institutional/edit_institutional_info.html',context)
 
-
+@login_required
 def edit_institutional_documents(request,id):
     membership_instance = get_object_or_404(Membership.objects.select_subclasses(), id=id)
     form = forms.EditInstitutionalDocuments(request.POST or None, request.FILES or None)
@@ -471,6 +496,8 @@ def edit_institutional_documents(request,id):
     }
     return render(request,'management/forms/institutional/edit_institutional_document.html',context)
 
+
+@is_user
 def resubmit_membership(request,id):
     membership_instance = get_object_or_404(Membership.objects.select_subclasses(), id=id)
     if request.method == 'POST':
@@ -480,6 +507,8 @@ def resubmit_membership(request,id):
         messages.success(request,'Your membership has been resubmitted successfully.')
         return redirect('management:user_dashboard')
 
+
+@is_admin
 def verify_membership(request,id):
     membership_object = get_object_or_404(Membership, id=id)
     if request.method == "POST":
@@ -506,7 +535,7 @@ def verify_membership(request,id):
             )
             return redirect("management:verify_membership", id=membership_object.id)
 
-
+@is_admin
 def reject_membership(request,id):
     membership_object = get_object_or_404(Membership, id=id)
     if request.method == "POST":
@@ -523,30 +552,43 @@ def reject_membership(request,id):
             # finally:
         return redirect("management:rejected_membership_list")
 
+
+@is_admin
 def all_approved_membership_list(request):
     members=Membership.objects.select_subclasses().filter(verification=True)
     context={
         'members':members,
     }
     return render(request,'management/listview/all_approved_membership_list.html',context)
+
+
+@is_admin
 def general_approved_membership_list(request):
     members=GeneralMembership.objects.filter(membership_type=1,verification=True)
     context={
         'members':members,
     }
     return render(request,'management/listview/general_membership_list.html',context)
+
+
+@is_admin
 def lifetime_approved_membership_list(request):
     members=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True))
     context={
         'members':members,
     }
     return render(request,'management/listview/lifetime_membership_list.html',context)
+
+@is_admin
 def student_approved_membership_list(request):
-    members=StudentMembership.objects.filter(verification=True)
+    members=GeneralMembership.objects.filter(Q(membership_type=4),Q(verification=True))
     context={
         'members':members,
     }
     return render(request,'management/listview/student_membership_list.html',context)
+
+
+@is_admin
 def institutional_approved_membership_list(request):
     members=InstitutionalMembership.objects.filter(verification=True)
     context={
@@ -554,13 +596,15 @@ def institutional_approved_membership_list(request):
     }
     return render(request,'management/listview/institutional_membership_list.html',context)
 
-
+@is_admin
 def rejected_membership_list(request):
     rejected_members = Membership.objects.select_subclasses().filter(rejected = True)
     context={
         'members' : rejected_members
     }  
     return render(request,'management/listview/all_approved_membership_list.html',context) 
+
+@login_required
 def payment(request):
     """Handles the payment for individual users."""
     user=request.user
@@ -612,6 +656,8 @@ def payment(request):
             "paid_date" :paid_date,
         }
     return render(request, "management/payment/payment.html", context)
+
+
 def initiate_khalti(request):
     """Initiates the payment by user and redirects them to the payment url."""
     user = request.user
@@ -679,3 +725,24 @@ def payment_verification(request):
         # message = request.GET.get("message")
         return HttpResponse('failed')
 
+
+
+def all_faqs(request):
+    faqs=FAQ.objects.all()
+    context={
+        'faqs':faqs
+    }
+    return render(request,'management/faqs_list.html',context)
+
+
+def create_faq(request):
+    if request.method=='POST':
+        form=forms.FAQForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('management:all_faqs')
+        else:
+            messages.info(request,'Please fill form correctly')
+            return redirect('management:create_faq')
+    
+    return render(request,'management/create_faq.html')

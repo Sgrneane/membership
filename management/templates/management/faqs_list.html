@@ -1,0 +1,46 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                    arrow_back_ios
+                                </span></div>FAQs <span style="color: #808080; margin-left: 5px;"> >
+                                faq</span>
+                        </a>
+                    </div>
+                    <div class="content-container">
+                        <h3 class="form-title">Frequently asked questions</h3>
+                        <hr>
+                    <div class="container my-5">
+                        <div class="faqs card mt-5">
+                          <div class="accordion accordion-flush education-details" id="education">
+                            {% for faq in faqs %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-{{ faq.id }}" aria-expanded="true" aria-controls="faq-{{ faq.id }}">
+                                       {{ faq.question }}
+                                    </button>
+                                </h2>
+                                <div id="faq-{{ faq.id }}" class="accordion-collapse collapse {% if forloop.counter == 1 %}show {% endif %}" data-bs-parent="#education">
+                                  <p>{{ faq.answer }}</p>
+                                </div>
+                            </div>
+                           {% endfor %}
+                        </div>
+                        
+                        </div>
+                        <div class="col-md-12 text-end">
+                        <a href="{% url 'management:create_faq' %}">
+                            <button type="submit" class="submit-btn btn">Add FAQ</button></a>
+                        </div>
+                      </div>
+                    </div>
+                    
+                
+  </div>
+</div>
+{% endblock %}

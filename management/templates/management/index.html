@@ -41,7 +41,7 @@
                 <a class="nav-link" href="{% url 'management:membership_guidelines' %}">Membership</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Events</a>
+                <a class="nav-link" href="{% url 'events:index_all_events'%}">Events</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link auth-btn" href="{% url 'account:login_user' %}">Login</a>
@@ -121,109 +121,19 @@
         <a href="./events.html"><i class="fa-solid fa-circle-arrow-right"></i></a>
       </div>
       <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
+        {% for event in events %}
         <div class="col">
-          <a href="">
+          <a href="{% url 'events:homepage_view_event' id=event.id %}">
             <div class="card h-100">
                 <div class="card-body membership-card">
-                    <span>01</span>
-                    <h5 class="form-title">All Members</h5>
-                    <p class="card-text">This group contains all the registered members.</p>
+                    <span>{{ forloop.counter|stringformat:"02d" }}</span>
+                    <h5 class="form-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.description|truncatewords:15 }}</p>
                 </div>
             </div>
           </a>
         </div>
-
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>02</span>
-                    <h5 class="form-title">General Members</h5>
-                    <p class="card-text">This group contains all the members with general membership.
-                    </p>
-                </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>03</span>
-                    <h5 class="form-title">Lifetime Membership</h5>
-                    <p class="card-text">This group contains all the members with lifetime
-                        membership.</p>
-                </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>04</span>
-                    <h5 class="form-title">Student Membership</h5>
-                    <p class="card-text">This group contains all the members with student
-                        membership.</p>
-                </div>
-            </div>
-          </a>
-        </div>
-        
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>05</span>
-                    <h5 class="form-title">Institutional Membership</h5>
-                    <p class="card-text">This group contains all the members with institutional
-                        membership.</p>
-                </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>06</span>
-                    <h5 class="form-title">Institutional Membership</h5>
-                    <p class="card-text">This group contains all the members with institutional
-                        membership.</p>
-                </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>07</span>
-                    <h5 class="form-title">Institutional Membership</h5>
-                    <p class="card-text">This group contains all the members with institutional
-                        membership.</p>
-                </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a href="">
-            <div class="card h-100">
-                <div class="card-body membership-card">
-                    <span>08</span>
-                    <h5 class="form-title">Institutional Membership</h5>
-                    <p class="card-text">This group contains all the members with institutional
-                        membership.</p>
-                </div>
-            </div>
-          </a>
-        </div>
-
+        {% endfor %}
     </div>
     </div>
 
@@ -240,22 +150,21 @@
             
             <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
               <div class="col">
-                <a href="{% url 'management:membership_guidelines' %}">
-                  <div class="card h-100">
-                      <div class="card-body membership-card">
-                          <span class="material-symbols-outlined"> multiple_stop</span>
-                          <h5 class="form-title">Membership Guidelines</h5>
-                      </div>
-                  </div>
-                </a>
-              </div>
-
-              <div class="col">
                 <a href="{% url 'management:general_members'%}">
                   <div class="card h-100">
                       <div class="card-body membership-card">
                           <span class="material-symbols-outlined"> person</span>
                           <h5 class="form-title">General <br>Members</h5>
+                      </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col">
+                <a href="{% url 'management:lifetime_members'%}">
+                  <div class="card h-100">
+                      <div class="card-body membership-card">
+                          <span class="material-symbols-outlined"> person</span>
+                          <h5 class="form-title">Lifetime Members</h5>
                       </div>
                   </div>
                 </a>
@@ -281,9 +190,7 @@
                       </div>
                   </div>
                 </a>
-              </div>
-
-              
+              </div>   
             </div>
 
           </div>
@@ -297,37 +204,18 @@
       </div>
       <div class="faqs card mt-5">
         <div class="accordion accordion-flush education-details" id="education">
+          {% for faq in faqs %}
           <div class="accordion-item">
               <h2 class="accordion-header">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#be" aria-expanded="false" aria-controls="be">
-                      What is Nepal Geotechnical Society?
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-{{ faq.id }}" aria-expanded="false" aria-controls="faq-{{ faq.id }}">
+                     {{ faq.question }}
                   </button>
               </h2>
-              <div id="be" class="accordion-collapse collapse show" data-bs-parent="#education">
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat facere eveniet velit nostrum repellat quo et accusamus maxime mollitia laudantium.</p>
+              <div id="faq-{{ faq.id }}" class="accordion-collapse collapse {% if forloop.counter == 1 %} show {% endif %}" data-bs-parent="#education">
+                <p>{{ faq.answer }}</p>
               </div>
           </div>
-          <div class="accordion-item">
-              <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#me" aria-expanded="false" aria-controls="me">
-                      Who is eligible to become a member of the Nepal Geotechnical Society?
-                  </button>
-              </h2>
-              <div id="me" class="accordion-collapse collapse" data-bs-parent="#education">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, enim obcaecati alias corrupti expedita laborum reiciendis, distinctio eos modi nemo sint molestiae facilis, repudiandae ipsa aliquam ipsum maiores nobis quaerat.
-                  </p>
-                </div>
-          </div>
-          <div class="accordion-item">
-              <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#phd" aria-expanded="false" aria-controls="phd">
-                      How can one become a member of the Nepal Geotechnical Society?
-                  </button>
-              </h2>
-              <div id="phd" class="accordion-collapse collapse" data-bs-parent="#education">
-                  <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero assumenda suscipit illo, voluptatem consequatur itaque eaque asperiores porro cumque. Maxime corrupti aliquid odio. Asperiores autem esse quos rem ratione, perspiciatis laudantium sunt iusto assumenda expedita! Molestias veritatis, aut asperiores suscipit unde id velit quasi temporibus accusamus earum maxime harum ipsa.</p>
-              </div>
-          </div>
+         {% endfor %}
       </div>
       </div>
     </div>
