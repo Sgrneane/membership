@@ -28,78 +28,181 @@
 
 
 {% if request.user.membership %}
-    {% if not membership.payment.exists %}
-            <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
-                    <span class="material-symbols-outlined me-2">
-                        info
-                    </span>
-                <div>
-                    You haven't made payment for your membership.<strong><a href ="{% url 'management:payment' %}">Proceed to payment.</a>
-                    </storng>
-                </div>
-            </div>
-    {% endif %}
-    {% if membership.membership_type == 2%}
-            {% if  not membership.pan_document %}
-            <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
-                    <span class="material-symbols-outlined me-2">
-                        info
-                    </span>
-                <div>
-                   Your registration for membership is not complete.<strong><a href ="{% url 'management:complete_institutional_membership' id=membership.id%}">Click here to Complete your registration.</a>
-                </storng>
-                </div>
-            </div>
+                {% if not membership.payment.exists %}
+                        <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
+                                <span class="material-symbols-outlined me-2">
+                                    info
+                                </span>
+                            <div>
+                                You haven't made payment for your membership.<strong><a href ="{% url 'management:payment' %}">Proceed to payment.</a>
+                                </storng>
+                            </div>
+                        </div>
                 {% endif %}
-    {% else %}
-                {% if not membership.nationaldocument or not membership.educational_information %}
-                <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
-                    <span class="material-symbols-outlined me-2">
-                        info
-                    </span>
-                    <div>
-                        Your registration for membership is not complete.<strong><a {% if not membership.nationaldocument %}href ="{% url 'management:complete_registration_national_document' id=membership.id %}" {% else %}href ="{% url 'management:complete_registration_educational_document'  id=membership.id %}"{% endif %}>Click here to Complete your registration.</a></strong>
+                {% if membership.membership_type == 2%}
+                        {% if  not membership.pan_document %}
+                        <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
+                                <span class="material-symbols-outlined me-2">
+                                    info
+                                </span>
+                            <div>
+                            Your registration for membership is not complete.<strong><a href ="{% url 'management:complete_institutional_membership' id=membership.id%}">Click here to Complete your registration.</a>
+                            </storng>
+                            </div>
+                        </div>
+                            {% endif %}
+                {% else %}
+                            {% if not membership.nationaldocument or not membership.educational_information %}
+                            <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
+                                <span class="material-symbols-outlined me-2">
+                                    info
+                                </span>
+                                <div>
+                                    Your registration for membership is not complete.<strong><a {% if not membership.nationaldocument %}href ="{% url 'management:complete_registration_national_document' id=membership.id %}" {% else %}href ="{% url 'management:complete_registration_educational_document'  id=membership.id %}"{% endif %}>Click here to Complete your registration.</a></strong>
+                                </div>
+                            </div>
+                            {% endif %}
+                {% endif %}
+
+                
+                {% if request.user.membership.verification == False and request.user.membership.rejected == False %}
+                        <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">
+                            <span class="material-symbols-outlined me-2">
+                                info
+                            </span>    
+                            <div>
+                            Your membership is under verification process.
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                {% elif request.user.membership.verification == False and request.user.membership.rejected == True %}
+                        <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">
+                                <span class="material-symbols-outlined me-2">
+                                    info
+                                </span>
+                            <div>
+                                Your membership is rejected. Remarks: {{ request.user.membership.remarks }}<strong><a href="{%url 'management:view_membership' id=membership.id %}">Click here to re-apply</a></strong>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                {% endif %}
+
+                {% if membership.membership_type != 2  or membership.membership_type != 3 %}
+                {% if membership.verification == True  and upgrade_request == False %}
+                    <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert"> 
+                        <span class="material-symbols-outlined me-2">
+                            info
+                        </span>
+                            <div>
+                                Your current membership is {{ request.user.membership.get_membership_type_display }}.<strong><a href="{% url 'management:upgrade_to_lifetime_membership' %}"> Click here to upgrade </a> to lifetime membership.</strong>
+                            </div>
                     </div>
-                </div>
                 {% endif %}
-    {% endif %}
+                {% endif %} 
 
-    
-    {% if request.user.membership.verification == False and request.user.membership.rejected == False %}
-            <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">
-                <span class="material-symbols-outlined me-2">
-                    info
-                </span>    
-                <div>
-                Your membership is under verification process.
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-    {% elif request.user.membership.verification == False and request.user.membership.rejected == True %}
-            <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">
-                    <span class="material-symbols-outlined me-2">
-                        info
-                    </span>
-                <div>
-                    Your membership is rejected. Remarks: {{ request.user.membership.remarks }}<strong><a href="{%url 'management:view_membership' id=membership.id %}">Click here to re-apply</a></strong>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-    {% endif %}
 
-    {% comment %} {% if membership.membership_type != 2  or membership.membership_type != 3 %}
-    {% if membership.verification == True %}
-        <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert"> 
-            <span class="material-symbols-outlined me-2">
-                info
-            </span>
-                <div>
-                    Your current membership is {{ request.user.membership.get_membership_type_display }}.<strong><a href="#"> Click here to upgrade </a> to lifetime membership.</strong>
-                </div>
-        </div>
-    {% endif %}
-    {% endif %} {% endcomment %}
+                <div class="row mt-4">
+                    <div class="col-md-7">
+                    
+                        <div class="db-data-container">
+                            <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+                                {% for event in events %}
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <div class="card-body event-card">
+                                            <img src="{{event.banner.url}}"  alt="">
+                                            <h5 class="form-title mt-3">{{ event.name }}</h5>
 
+                                            <p class="card-text d-flex align-items-center">
+                                        
+                                                <span class="material-symbols-outlined me-2">
+                                                {% if event.type == 1 %}dialogs
+                                                {% else %} location_on
+                                                {% endif %}
+                                                </span> {{ event.veneu }}
+                                            </p>
+                                            <p class="card-text d-flex align-items-center">
+                                                <span class="material-symbols-outlined me-2">
+                                                calendar_month
+                                                </span> {{ event.date }}
+                                            </p>
+                                            <p class="card-text d-flex align-items-center">
+                                                <span class="material-symbols-outlined me-2">
+                                                pace
+                                                </span> {{ event.duration }}
+                                            </p>
+                                            </div>
+                                            <div class="card-footer text-end">
+                                                <a href="{% url 'events:view_event' id=event.id %}" class="btn btn-apply w-100">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-5 db-data-container user-card-container">
+                            <div class="main-card" style="padding: 5px;" id="savecard">
+                                <div class="member-card" >
+                                    <div class="card-first">
+                                        {% if membership.membership_type == 1 %}
+                                        <img src="{% static 'images/general.png' %}" alt="">
+                                        {% elif membership.membership_type == 4%}
+                                        <img src="{% static 'images/student.png' %}" alt="">
+                                        {% elif membership.membership_type == 3%}
+                                        <img src="{% static 'images/lige.png' %}" alt="">
+                                        {% else %}
+                                        <img src="{% static 'images/institutional.png' %}" alt="">
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="card-second">
+                                        <div class="top-card">
+                                            <img src="{% static 'images/card-logo.png' %}" alt="">
+                                            <div class="top-inner">
+                                                <h3>Nepal Geotechnical Society</h3>
+                                                <h2>भूप्रविधि समाज नेपाल</h2>
+                                                <p>ngeotechs.org</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="middle-card">
+                                            <img src='{{ membership.pp_photo.url }}' alt="">
+                                            {% if membership.verification == True %}
+                                            <div class="card-user">
+                                                <h3>{{ membership.name_of_applicant }}</h3>
+                                                <p>Member Since: {{ membership.membership_since}}</p>
+                                                <p>Member ID:  {{ membership.membership_number }}</p>
+                                            </div>
+                                            {% else %}
+                                            <p>Your Membership is not verified.</p>
+                                            {% endif %}
+                                        </div>
+                            
+                                        
+
+                                        <div class="end-card">
+                                            <div class="end-first">
+                                                {% if membership.membership_type != 3 %}
+                                                <p> The card is valid for one year from the date of issue.</p>
+                                                {% endif %}
+                                            </div>
+                                            <div class="end-second">
+                                                <img src="{% static 'images/signature.png' %}" alt="">
+                                                <p>Authorized Signature</p>
+                                                <p>Issued Date: {{ membership.verified_date|date:"Y-m-d" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="option-btns">
+                                <button onclick="saveAsImage('savecard')" class="btn submit-btn">Save Card</button>
+                                <a href="{% url 'management:view_membership' id=membership.id %}" class="btn submit-btn ms-2">Membership Details</a>
+                            </div>
 {% else %}
     <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">
         <span class="material-symbols-outlined me-2">
@@ -109,9 +212,7 @@
             Welcome to Ngeotech Membership Portal.<strong><a href="{% url 'management:new_membership' %}" style="color:red"> Click here to Apply for membership. </a></strong>
         </div>
     </div>
-    
-{% endif %}
-       {% if not request.user%}
+
             <div class="row mt-4">
                
                 <div class="col-md-7">
@@ -170,79 +271,16 @@
                             </div>
                           </div>
                     </div>
-                    {% comment %} {% else %}
-
-                    {% endif %} {% endcomment %}
                 </div>
                
                 
 
                 <div class="col-md-5 db-data-container user-card-container">
-                    {% if membership is None %}
                     <img src="{% static 'images/blur-card.png'%}" class="w-100" alt="">
-                    {% else %}
-                    <div class="main-card" style="padding: 5px;" id="savecard">
-                        <div class="member-card" >
-                            <div class="card-first">
-                                {% if membership.membership_type == 1 %}
-                                <img src="{% static 'images/general.png' %}" alt="">
-                                {% elif membership.membership_type == 4%}
-                                <img src="{% static 'images/student.png' %}" alt="">
-                                {% elif membership.membership_type == 3%}
-                                <img src="{% static 'images/lige.png' %}" alt="">
-                                {% else %}
-                                <img src="{% static 'images/institutional.png' %}" alt="">
-                                 {% endif %}
-                            </div>
-
-                            <div class="card-second">
-                                <div class="top-card">
-                                    <img src="{% static 'images/card-logo.png' %}" alt="">
-                                    <div class="top-inner">
-                                        <h3>Nepal Geotechnical Society</h3>
-                                        <h2>भूप्रविधि समाज नेपाल</h2>
-                                        <p>ngeotechs.org</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="middle-card">
-                                    <img src='{{ membership.pp_photo.url }}' alt="">
-                                    {% if membership.verification == True %}
-                                    <div class="card-user">
-                                        <h3>{{ membership.name_of_applicant }}</h3>
-                                        <p>Member Since: {{ membership.membership_since}}</p>
-                                        <p>Member ID:  {{ membership.membership_number }}</p>
-                                    </div>
-                                    {% else %}
-                                    <p>Your Membership is not verified.</p>
-                                    {% endif %}
-                                </div>
-                    
-                                
-
-                                <div class="end-card">
-                                    <div class="end-first">
-                                        {% if membership.membership_type != 3 %}
-                                        <p> The card is valid for one year from the date of issue.</p>
-                                        {% endif %}
-                                    </div>
-                                    <div class="end-second">
-                                        <img src="{% static 'images/signature.png' %}" alt="">
-                                        <p>Authorized Signature</p>
-                                        <p>Issued Date: {{ membership.verified_date|date:"Y-m-d" }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="option-btns">
-                        <button onclick="saveAsImage('savecard')" class="btn submit-btn">Save Card</button>
-                        <a href="{% url 'management:view_membership' id=membership.id %}" class="btn submit-btn ms-2">Membership Details</a>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
+
+          {% endif %}
         </div>
         
     </div>

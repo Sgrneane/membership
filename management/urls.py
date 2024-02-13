@@ -59,6 +59,13 @@ urlpatterns = [
     path('lifetime-members',views.lifetime_members,name='lifetime_members'),
     path('general-members',views.general_members,name='general_members'),
     path('institutional-members',views.institutional_members,name='institutional_members'),
+    #upgrade request table
+    path('upgrade-to-lifetime-members',views.lifetime_upgrade_request_list,name='upgrade_lifetime_membership_list'),
+    path('upgrade-to-general-members',views.general_upgrade_request_list,name='upgrade_general_membership_list'),
+    #upgrade Membership
+    path('upgrade-to-general-members',views.upgrade_to_general_membership,name='upgrade_to_general_membership'),
+    path('upgrade-to-lifetime-members',views.upgrade_to_lifetime_membership,name='upgrade_to_lifetime_membership'),
+    path('verify-upgrade/<int:id>',views.verify_upgrade,name='verify_upgrade'),
 
 
     ##Faqs

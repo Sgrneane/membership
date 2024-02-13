@@ -14,6 +14,7 @@ from membership.tasks import send_token_mail
 from django.contrib.auth.decorators import login_required
 from account.decorators import is_user,is_admin
 from events.models import Event
+import pandas as pd
 
 # Create your views here.
 def index(request):
@@ -70,6 +71,7 @@ def user_dashboard(request):
         student_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True)).count()
         lifetime_membership_count=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True)).count()
         institutional_membership_count=InstitutionalMembership.objects.filter(verification=True).count()
+        events = Event.objects.all()
         membership=None
         try:
             membership=user.membership
@@ -82,7 +84,8 @@ def user_dashboard(request):
             'student_membership_count':student_membership_count,
             'institutional_membership_count':institutional_membership_count,
             'lifetime_membership_count' :lifetime_membership_count,
-            'membership' : membership
+            'membership' : membership,
+            'events':events
         }
         return render(request,'management/user_dashboard.html',context)
     if user.role == 1:
@@ -634,9 +637,14 @@ def payment(request):
         if form.is_valid():
             Payment.objects.create(
                 created_by=request.user,
-                 member=request.user.membership,
+                 member=membership,
                 created_at=datetime.now(), **form.cleaned_data
             )
+            if membership.upgrade_request == True:
+                membership.upgrade_payment = True
+                membership.save()
+            else:
+                pass
             return redirect('management:payment')# redirect to payment page
         else:
             messages.error(
@@ -656,6 +664,48 @@ def payment(request):
             "paid_date" :paid_date,
         }
     return render(request, "management/payment/payment.html", context)
+
+
+def general_upgrade_request_list(request):
+    general_upgrade_membership=GeneralMembership.objects.filter(Q(upgrade_request=True),Q(upgrade_membership_type=1))
+    context={
+        'members':general_upgrade_membership,
+        'upgrade':2
+    }
+    return render(request,'management/listview/upgrade_list.html',context)
+
+def lifetime_upgrade_request_list(request):
+    general_upgrade_membership=GeneralMembership.objects.filter(Q(upgrade_request=True),Q(upgrade_membership_type=3))
+    context={
+        'members':general_upgrade_membership,
+        'upgrade':1
+    }
+    print('general_upgrade_membership')
+    return render(request,'management/listview/upgrade_list.html',context)
+
+
+def upgrade_to_general_membership(request):
+    user=request.user
+    membership=get_object_or_404(Membership.objects.select_subclasses(),associated_user=user)
+    membership.upgrade_request=True
+    membership.upgrade_membership_type = 1
+    membership.save()
+    return redirect('management:payment')
+
+def upgrade_to_lifetime_membership(request):
+    user=request.user
+    membership=get_object_or_404(Membership.objects.select_subclasses(),associated_user=user)
+    membership.upgrade_request=True
+    membership.upgrade_membership_type = 3
+    membership.save()
+    return redirect('management:payment')
+
+
+def verify_upgrade(request,id):
+    membership= get_object_or_404(Membership.objects.select_subclasses(),id=id)
+    membership.membership_type = membership.upgrade_membership_type
+    membership.save()
+    return redirect('management:all_approved_membership_list')
 
 
 def initiate_khalti(request):
@@ -746,3 +796,5 @@ def create_faq(request):
             return redirect('management:create_faq')
     
     return render(request,'management/create_faq.html')
+
+

@@ -27,18 +27,20 @@
                         {% endif %}
             {% else %}
                         {% if not membership.nationaldocument or not membership.educational_information %}
-                        <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert">
-                            <span class="material-symbols-outlined me-2">
-                                info
-                            </span>
-                            <div>
-                                Your registration for membership is not complete.<strong><a {% if not membership.nationaldocument %}href ="{% url 'management:complete_registration_national_document' id=membership.id %}" {% else %}href ="{% url 'management:complete_registration_educational_document'  id=membership.id %}"{% endif %}>Click here to Complete your registration.</a></strong>
+                        <div class="row d-flex justify-content-center mx-1 mt-4">
+                            <div class="alert alert-warning d-flex align-items-center fade show mt-4" role="alert" style="width: 80%";>
+                                <span class="material-symbols-outlined me-2">
+                                    info
+                                </span>
+                                <div>
+                                    Your registration for membership is not complete.<strong><a {% if not membership.nationaldocument %}href ="{% url 'management:complete_registration_national_document' id=membership.id %}" {% else %}href ="{% url 'management:complete_registration_educational_document'  id=membership.id %}"{% endif %}>Click here to Complete your registration.</a></strong>
+                                </div>
                             </div>
                         </div>
                         {% endif %}
             {% endif %} 
                     
-                    
+            {% if membership.upgrade_request == False or membership.upgrade_request == None %}
                     {% if request.user.paid_payment.exists %}
                     <div class="multilevel-form">
                         <div class="step" id="step1">
@@ -155,7 +157,112 @@
                         </div>
                     </div>
                     {% endif %}
+            {% elif membership.upgrade_request == True %}
+                {% if membership.upgrade_payment == True %}
+                    <div class="multilevel-form">
+                        <div class="step" id="step1">
+                            <h3 class="form-title">Hey {{ request.user.full_name }},</h3>
+                            <p class="label mb-0">Congratulations! <br>
+                                {% if request.user.membership.verification == True %}
+                                Your membership has been verified, and you've successfully made a payment of <span class="data" style="color: #007ade;">
+                                    {% if membership.upgrade_membership_type == 1 %} RS. 1000{% else %}Rs. 10000 {% endif %}</span> for a <span class="data" style="color: #007ade;">{{ membership.get_upgrade_membership_type_display }} Membership </span>on {{ paid_date }}</p>
+                                {% else %}
+                                You've successfully made a payment of <span class="data" style="color: #007ade;">
+                                    {% if membership.upgrade_membership_type == 1 %} RS. 1000{% else %}Rs. 10000 {% endif %}
+                                </span> for a <span class="data" style="color: #007ade;">{{ membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p>
+                                {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+            <div class="multilevel-form">
+                <div class="step" id="step1">
+                    <h3 class="form-title">Hey {{ request.user.first_name }},</h3>
+                    <p class="label">Your request to upgrade membership is successful.<br>Please deposit an amount of <span class="data" style="color: #007ade;">
+                        
+                        {% if membership.upgrade_membership_type == 1%}Rs. 2000
+                        {% elif membership.upgrade_membership_type == 2 %} Rs. 1,00,000
+                    {% endif %}</span> to continue <span class="data" style="color: #007ade;">{{ membership.get_upgrade_membership_type_display }} Membership</span> registration.</p>
 
+                    <div class="row mb-3 d-flex justify-content-center">
+                        <div class="col-md-10">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="qr-code h-100">
+                                        <div>
+                                            <label class="data cm text-center">Scan the QR below to pay</label>
+                                            <img src="{% static 'images/qrcode.jpg'%}" alt="QR code" class="qrcode-image">
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="account-detail">
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Account Name :
+                                              <span class="data text-dark">Nepal Geotechnical Society</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Bank Name :
+                                              <span class="data text-dark">Nabil Bank</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Branch :
+                                              <span class="data text-dark">Pulchowk, Lalitpur</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Account Number :
+                                              <span class="data text-dark">1901017501614</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Swift Number :
+                                              <span class="data text-dark">NBRBNPKA</span>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                    <div class="other-options mt-4">
+                                        <label class="data cm text-center mb-2">Or, pay via</label>
+                                        <div class="payment-options">
+                                             <form action="{% url 'management:initiate_khalti' %}" method="POST">
+                                                {% csrf_token %}
+                                                <label for="khalti-submit">
+                                                <span class="payment-logo">
+                                                 <img src="{% static 'images/khalti.png' %}" alt="">
+                                                </span>
+                                                <input type="hidden" name="purchase_order_id" value="{{uid}}">
+                                                <input type="hidden" name="amount" value="100000">
+                                                <input type="hidden" name="return_url" value="{{return_url}}">
+                                                </label >
+                                                <input type="submit" id="khalti-submit" style="display: none;">
+                                            </form>
+                                            <span class="payment-logo">
+                                                <img src="{% static 'images/paypal.webp' %}" alt="">
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="account-detail mt-4">
+                                        <form action="{% url 'management:payment' %}" method='post' enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <label class="form-level cm">Upload Payment Screen Shot/Voucher</label>
+                                            <input type="file" class="form-control cm" name='payment_ss'>
+                                            <div class="col-md-12 d-flex justify-content-end">
+                                                <button type="submit" class="btn submit-btn w-50 mt-2">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
                 </div>
 
             </div>

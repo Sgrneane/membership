@@ -279,8 +279,15 @@
                         <div class="button-container mt-2 d-flex justify-content-start">
                             <button type="button" class="btn btn-secondary reject-btn me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
                             <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#verifyModal">Verify</button>
+                            {% if membership.upgrade_request == True %}
+                            <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#verifyModal">Upgrade</button>
+                            {% endif %}
                         </div>
                     </div>
+                    {% endif %}
+                    {% if membership.upgrade_request == True %}
+                    <h2 class="data">{{ membership.name_of_applicant }} is requesting to upgrade to {{ membership.get_upgrade_membership_type_display }}.Please Verify the upgrade request.</h2>
+                    <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#upgradeModal">Upgrade</button>
                     {% endif %}
                     {% endif %}
                  <!-- Reject Modal -->
@@ -344,6 +351,23 @@
                         <button type="submit" class="btn btn-primary submit-btn">Verify</button>
                         </div>
                     </form>
+                    </div>
+                 </div>
+                </div>
+
+                    <div class="modal fade" id="upgradeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Upgrade Membership</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-prev" data-bs-dismiss="modal">Close</button>
+                            <a href="{% url 'management:verify_upgrade' id=membership.id %}"><button type="submit" class="btn btn-primary reject-btn">Upgrade</button></a>
+                            </div>
+                        </div>
+                        </div>
                     </div>
                 
                     </div>

@@ -75,6 +75,8 @@ class GeneralMembership(Membership,PersonalInfo):
     nationaldocument =models.OneToOneField(NationalDocumment,on_delete=models.CASCADE, related_name="associated_membership",null=True)
     educational_information = models.OneToOneField(EducationalDocuments,on_delete=models.CASCADE,related_name="edu_members",null=True)
     upgrade_request = models.BooleanField(null=True)
+    upgrade_membership_type = models.PositiveIntegerField(choices=choices.MEMBERSHIP_TYPES,null=True)
+    upgrade_payment = models.BooleanField(default=False)
 
     def __str__(self):
         return self.associated_user.first_name
