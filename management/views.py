@@ -704,6 +704,8 @@ def upgrade_to_lifetime_membership(request):
 def verify_upgrade(request,id):
     membership= get_object_or_404(Membership.objects.select_subclasses(),id=id)
     membership.membership_type = membership.upgrade_membership_type
+    membership.upgrade_request=False
+    membership.upgrade_payment = False
     membership.save()
     return redirect('management:all_approved_membership_list')
 
