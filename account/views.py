@@ -17,7 +17,7 @@ from .generate_token import generate_unique_four_digit_number
 from membership.tasks import send_token_mail
 from management.models import Membership
 
-
+@authentication_not_required
 def signup(request):
     """For creating regular users."""
     form = SignupForm(request.POST or None)

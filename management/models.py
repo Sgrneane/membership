@@ -12,10 +12,8 @@ class PersonalInfo(models.Model):
     gender = models.CharField(max_length=1, choices=choices.GENDER_CHOICES)
     affiliation = models.CharField(max_length=200)
     pp_photo = models.ImageField(upload_to="personal_photo")
-    salutation = models.CharField(
-        max_length=2, choices=choices.SALUTATION_CHOICES, blank=True, null=True
-    )
-    phone_number = models.CharField(max_length=15,null=True)
+    salutation = models.CharField(max_length=20, blank=True, null=True)
+    phone_number = models.CharField(max_length=20,null=True)
     class Meta:
         abstract = True
 
@@ -54,17 +52,21 @@ class Membership(models.Model):
     remarks = models.TextField(null=True)
     objects = InheritanceManager()
     # To save Expiry Date 
+    
     def save(self, *args, **kwargs):
-        # Set expiry_date to None for lifetime members (membership_type = 1)
         if self.created_at is None:
             self.created_at = timezone.now()
+
         if self.membership_type == 3:
             self.expiry_date = None
         elif not self.expiry_date:
-            # Set expiry_date to 1 year later from the created_at date for other membership types
             self.expiry_date = self.created_at + timedelta(days=365)
 
-        super().save(*args, **kwargs)
+        if not self.membership_number:
+            membership_count = Membership.objects.count() + 1
+            self.membership_number = f'NGS{membership_count:03}'
+
+        super(Membership, self).save(*args, **kwargs)
     
     class Meta:
         ordering = ['-created_at']
@@ -85,17 +87,6 @@ class GeneralMembership(Membership,PersonalInfo):
         return self.associated_user.email
     
 
-class StudentMembership(Membership,PersonalInfo):
-    nationaldocument =models.OneToOneField(NationalDocumment,on_delete=models.CASCADE, related_name="student_membership",null=True)
-    level = models.CharField(max_length=1, choices=choices.STUDENT_LEVEL_CHOICES, blank=True, null=True)
-    educational_information=models.OneToOneField(EducationalDocuments,on_delete=models.CASCADE,related_name='students',null=True)
-    upgrade_request = models.BooleanField(null=True)
-
-    def __str__(self):
-        return self.associated_user.full_name
-    @property
-    def email(self):
-        return self.created_by.email
 
 class InstitutionalMembership(Membership):
     company_name = models.CharField(max_length=200)

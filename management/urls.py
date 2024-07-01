@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
-
+from .insert import ImportBulkData
 app_name='management'
 urlpatterns = [
     path('',views.index, name='index'),
@@ -71,4 +71,6 @@ urlpatterns = [
     ##Faqs
     path('all-faqs',views.all_faqs,name='all_faqs'),
     path('create-faq',views.create_faq,name='create_faq'),
+    path('import-bulk-data',ImportBulkData.as_view(),name='import_bulk_data')
+
 ]

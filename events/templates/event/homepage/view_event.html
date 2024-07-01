@@ -154,5 +154,66 @@
                 {% endif %}
 
             </div>
+            <!-- Participate button -->
+            <!-- <a href="{% url 'events:participate' event.id %}" class="btn btn-primary">Participate</a> -->
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#participate">
+              Participate
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="participate" tabindex="-1" aria-labelledby="participateLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="participateLabel">Enter your details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="twoStepForm" class="form" method="POST" action="">
+                      {% csrf_token %}
+                      <input type="text" name="event_id" value="{{event.id}}" hidden>
+                           <div class="row mb-3">
+                               <div class="col-md-12">
+                                   <label class="form-label cm">Your name <span
+                                           class="required-text">*</span></label>
+                                   <input type="text" class="form-control cm" name="name" placeholder="Enter your name" required >   
+                               </div> 
+                           </div>
+
+                           <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label cm">Email address </label>
+                                <input type="text" class="form-control cm" name="email" placeholder="Enter email address"  >   
+                            </div> 
+                          </div>
+
+                          <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label cm">Phone number</label>
+                                <input type="text" class="form-control cm" name="phone" placeholder="Enter phone number" >   
+                            </div> 
+                          </div>
+                    
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input  type="submit" class="btn btn-primary" value="Submit">
+                  </div>
+
+                </form>
+                </div>
+              </div>
+            </div>
+            
     </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+    </body>
+    </html>
     

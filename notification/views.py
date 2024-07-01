@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect, HttpResponse, get_object_or_404
 from account.models import CustomUser
 from .models import (Notifications,Groups)
 from .forms import CreateGroupForm,NotificationForm
-from management.models import Membership, GeneralMembership,StudentMembership,InstitutionalMembership
+from management.models import Membership, GeneralMembership,InstitutionalMembership
 from django.contrib import messages
 
 # Create your views here.

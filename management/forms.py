@@ -1,6 +1,7 @@
 from django import forms
-from .models import StudentMembership,GeneralMembership,InstitutionalMembership,EducationalDocuments, Payment,FAQ
+from .models import GeneralMembership,InstitutionalMembership,EducationalDocuments, Payment,FAQ
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ValidationError
 from . import choices
 from datetime import date, timedelta
 
@@ -159,7 +160,6 @@ class EditInstitutionalDocuments(forms.Form):
     pan_document = forms.FileField(required=False)
     registration_document = forms.FileField(required=False)
 class VerificationForm(forms.Form):
-    membership_no = forms.CharField()
     membership_since = forms.CharField(max_length=4)
 class PaymentForm(forms.ModelForm):
     class Meta:
@@ -171,3 +171,12 @@ class FAQForm(forms.ModelForm):
     class Meta:
         model=FAQ
         fields='__all__'
+
+
+class MembershipImportForm(forms.Form):
+    excel_file = forms.FileField()
+    def clean_excel_file(self):
+        file = self.cleaned_data['excel_file']
+        if not file.name.endswith('.xlsx'):
+            raise ValidationError('Invalid file type: Only .xlsx files are supported.')
+        return file

@@ -1,0 +1,76 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+
+    <div class="main-section-container">
+        <div class="row back-link">
+            <a href="#" onclick="history.back()">
+                <div class="icon-box"><span class="material-symbols-outlined">arrow_back_ios</span></div>
+                Payment Process > {{ event.name }}
+            </a>
+        </div>
+
+        {% if amount_paid %}
+        <div class="multilevel-form">
+            <div class="step" id="step1">
+                <h3 class="form-title">Hey {{ name }},</h3>
+                <p>Your have paid the amount of <span class="data" style="color: #007ade;">{{ amount_paid }}</span> for event <span class="data" style="color: #007ade;">{{ event.name }}</span>.</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="multilevel-form">
+            <div class="step" id="step2">
+                <h3 class="form-title">Hey {{ name }}</h3>
+                <p>You are about to make a payment for the event <span class="data" style="color: #007ade;">{{ event.name }}</span>.</p>
+
+                <form id="paymentForm" method="post" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    <input type="hidden" name="event_id" value="{{ event.id }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label cm">Select ticket type <span class="required-text">*</span></label>
+                            <select id="ticket_type" class="form-select form-control" aria-label="Default select example" name='ticket_type' required>
+                                <option value="" disabled selected>Select Ticket Type</option>
+                                {% for ticket_type in ticket_types %}
+                                <option value="{{ ticket_type.id }}">{{ ticket_type.name }} - ${{ ticket_type.price }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 h-100 align-items-center">
+                            <label for=""></label>
+                            <h3 class="form-title" id="amountPaid" style="height: 55px; display: flex; align-items: center;"></h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label class="form-label cm">Upload Payment Screen Shot/Voucher <span class="required-text">*</span></label>
+                            <input type="file" class="form-control cm" name='payment_ss' required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn submit-btn w-100 mt-2" style="margin-top: 24px!important;">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}   
+<script>
+    document.getElementById('ticket_type').addEventListener('change', function() {
+        var ticketType = this.value;
+        var ticketTypes = {{ ticket_types_json | safe }};
+        var amountPaid = ticketTypes[ticketType];
+        document.getElementById('amountPaid').textContent = 'Amount to pay: $' + amountPaid;
+    
+</script>
+{% endblock %}

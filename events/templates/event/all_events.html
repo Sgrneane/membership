@@ -14,7 +14,7 @@
                         </a>
                     </div>
 
-                    <div class="content-container">
+                    <div class="content-container mt-4">
                         <h3 class="form-title">All Events</h3>
                         <hr>
 
@@ -51,6 +51,22 @@
                                                 <div class="action-btn-view">
                                                     <a href="{% url 'events:view_event' id=event.id %}">
                                                         <span class="material-symbols-outlined">visibility</span>
+                                                    </a>
+                                                </div>
+
+                                                <div class="action-btn-view">
+                                                    <a href="{% url 'events:event_participation_list' event.id %}">
+                                                        <span class="material-symbols-outlined">
+                                                            check_circle
+                                                            </span>
+                                                    </a>
+                                                </div>
+
+                                                <div class="action-btn-view">
+                                                    <a href="{% url 'events:not_going_participants' event.id %}">
+                                                        <span class="material-symbols-outlined">
+                                                            cancel
+                                                            </span>
                                                     </a>
                                                 </div>
                                         </div>

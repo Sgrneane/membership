@@ -69,7 +69,7 @@
                             <div class="row mb-3 mt-4">
                                 <div class="col-md-4">
                                     <label class="form-label cm">Name</label>
-                                    <p class="data">{{ membership.get_salutation_display }} {{ membership.name_of_applicant }}</p>
+                                    <p class="data">{{ membership.salutation }} {{ membership.name_of_applicant }}</p>
                                 </div>
 
                                 <div class="col-md-4">
@@ -335,11 +335,6 @@
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                                <div class="row mb-2">
-                                    <label class="form-label cm">Membership no.<span class="required-text">*</span></label>
-                                    <input type="text" class="form-control cm"
-                                    placeholder="Enter membership number" name='membership_no' required></input>
-                                </div>
                                 <div class="row mb-2">
                                     <label class="form-label cm">Member since<span class="required-text">*</span></label>
                                     <input type="text" class="form-control cm"

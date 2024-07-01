@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "management",
     'events',
     'notification',
+    'whitenoise.runserver_nostatic', # new
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ WSGI_APPLICATION = "membership.wsgi.application"
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'new_membership', #lims_new
+#         'NAME': 'new_membership',
 #         'USER': 'root',
 #         'PASSWORD':'',
 #         'HOST':'localhost',

@@ -517,9 +517,7 @@ def verify_membership(request,id):
     if request.method == "POST":
         form = forms.VerificationForm(request.POST)
         if form.is_valid():
-            membership_no = form.cleaned_data.get("membership_no")
             membership_since = form.cleaned_data.get("membership_since")
-            membership_object.membership_number = membership_no
             membership_object.membership_since = membership_since
             membership_object.verification = True
             membership_object.verified_date = datetime.now()
@@ -534,7 +532,7 @@ def verify_membership(request,id):
         else:
             messages.error(
                 request,
-                "Enter membership number and membership year to verify the member",
+                "Enter  membership year to verify the member",
             )
             return redirect("management:verify_membership", id=membership_object.id)
 
@@ -798,5 +796,7 @@ def create_faq(request):
             return redirect('management:create_faq')
     
     return render(request,'management/create_faq.html')
+
+
 
 

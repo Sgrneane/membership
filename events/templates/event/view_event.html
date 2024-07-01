@@ -20,11 +20,7 @@
                                 <h3 class="form-title">{{ event.name }}</h3>
                                 <hr>
 
-                                <div class="row mb-3 mt-4">
-                                    <div class="col-md-12">
-                                        <p class="data">{{ event.name }}</p>
-                                    </div>
-                                </div>
+                                
 
                                 <div class="row mb-3">
                                     <div class="col-md-12 event-card">
@@ -107,12 +103,22 @@
                                                 attach_file
                                                 </span><a href=""{{ event.url_location }}""></a> 
                                             </p>
-                                        </div>        
+                                        </div>    
+                                        {% endif %}    
                                     </div>
-                                {% endif %}
-
-
+<!-- 
                                 <div class="row mb-3">
+                                    <div class="col-md-12">
+                                         Button trigger modal
+                                        <button type="button" class="btn btn-primary w-25" data-bs-toggle="modal" data-bs-target="#participate">
+                                            Participate
+                                        </button>
+                                    </div>
+                                </div> -->
+                                
+
+
+                                <!-- <div class="row mb-3">
                                     <div class="col-md-12 map">
                                         <label class="form-label cm">Notified groups</label>
                                         <p class="mt-2">
@@ -121,14 +127,14 @@
                                         {% endfor %}
                                         </p>
                                     </div>       
-                                </div>
+                                </div> -->
 
 
                                 
                                 
 
 
-                                <div class="row mb-3">
+                                <!-- <div class="row mb-3">
                                         <div class="col-md-8">
                                             <form action="">
                                             <label class="form-label cm">Notify other groups </label>
@@ -143,15 +149,28 @@
                                             <button class="btn submit-btn w-100">Notify</button>
                                         </div>
                                     </form>
-                                </div>
+                                </div> -->
 
                             </div>
 
                     </div>
 
                 </div>
+                <!-- Participate button -->
+               <!-- Participate button -->
+{% if request.user.role == 2 %}
+<a href="{% url 'events:participate' event.id %}" class="btn btn-primary">Going</a>
+<form method="post" action="">
+    {% csrf_token %}
+    <input type="hidden" name="hello" value="2">
+    <button type="submit" class="btn btn-primary">Not Interested</button>
+</form>
+{% endif %}
 
-            </div>
+            
+        </div>
+
+            
 {% endblock %}
 {% block scripts %}
 <script>

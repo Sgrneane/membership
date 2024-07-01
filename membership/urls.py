@@ -26,7 +26,7 @@ urlpatterns = [
     path('account/',include('account.urls')),
     path('notifications/',include('notification.urls')),
     path('events',include('events.urls')),
-     path(
+    path(
         "reset-password/",
         CustomPasswordResetView.as_view(
             template_name="account/forget_password.html"
