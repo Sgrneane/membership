@@ -1,0 +1,61 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+
+            <div class="col-md-9 my-profile-w-80 g-0">
+                {% include 'management/topbar.html' %}
+            
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span>
+                            </div>Events <span style="color: #808080; margin-left: 5px;"> > All</span>
+                        </a>
+                    </div>
+
+
+
+                    <div class="row row-cols-1 row-cols-md-4 g-4 mt-4">
+
+                        {% for event in events %}
+                            <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body event-card">
+                                <img src="{{event.banner.url}}"  alt="">
+                                <h5 class="form-title mt-3">{{ event.name }}</h5>
+
+                                <p class="card-text d-flex align-items-center">
+                            
+                                    <span class="material-symbols-outlined me-2">
+                                    {% if event.type == 1 %}dialogs
+                                    {% else %} location_on
+                                    {% endif %}
+                                    </span> {{ event.veneu }}
+                                </p>
+                                <p class="card-text d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">
+                                    calendar_month
+                                    </span> {{ event.date }}
+                                </p>
+                                <p class="card-text d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">
+                                    pace
+                                    </span> {{ event.duration }}
+                                </p>
+                                </div>
+                                <div class="card-footer text-end">
+                                    <a href="{% url 'events:view_event' id=event.id %}" class="btn btn-apply w-100">View Details</a>
+                                </div>
+                            </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                
+            </div>
+  
+
+{% endblock %}

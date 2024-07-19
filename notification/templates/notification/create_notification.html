@@ -1,0 +1,59 @@
+{% extends 'notification/create_group.html' %}
+{% load static %}
+         {% block form %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>Notification <span style="color: #808080; margin-left: 5px;"> > Create mail</span></a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        {% if notification %}
+                        <form method ='post',action='{% url 'notification:edit_notification' id=form.instance.id %}'>
+                            {% else %}
+                        <form method ='post', action={% url 'notification:create_notification' %}>
+                            {% endif %}
+                            {% csrf_token %}
+                            <div class="step" id="step1">
+                                <h3 class="form-title">Create notification mail</h3>
+                                <hr>
+            
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Mail subject <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter mail subject" name='subject'{% if form.instance %}value='{{ form.instance.subject }}'{% endif %} required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Mail description</label>
+                                        <textarea class="form-control cm" placeholder="Enter mail description" rows="5" name='description'>{% if form.instance %}{{ form.instance.description }}{% endif %}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label cm">Select groups <span class="required-text">*</span></label>
+                                        <select class="contact-list js-states form-control cm" name="groups" multiple="multiple">
+                                            {% for group in groups %}
+                                            <option value="{{ group.id }}" {% if form.instance and group in form.instance.groups.all %}selected{% endif %}>{{ group.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-secondary prev-btn me-2"  name='status' value='0'>Save as draft</button>
+                                    <button type="submit" class="btn submit-btn" name='status' value='1'>Send mail</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+        {% endblock %}
+                
+          

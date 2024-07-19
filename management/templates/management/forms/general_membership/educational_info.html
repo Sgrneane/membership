@@ -1,0 +1,118 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>Complete Membership Registration <span style="color: #808080; margin-left: 5px;"> > {{ request.user.full_name }}</span></a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        
+                        {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="row">
+                                <div class="alert alert-danger">
+                                    {{ error|escape }}
+                                    </div>
+                            </div>
+                                
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="row">
+                            <div class="alert alert-danger">
+                                {{ error|escape }}
+                                </div>
+                        </div>
+                        
+                        {% endfor %}
+                    {% endif %}
+{% if not request.user.membership.educational_information %}
+<form  action={% url 'management:complete_registration_educational_document' id=request.user.membership.id %} method='post' enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="step" id="step2">
+        <h3 class="form-title">Educational Information</h3>
+        <hr>
+        <div class="accordion accordion-flush education-details" id="education">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                        <button class="accordion-button" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#be"
+                            aria-expanded="false" aria-controls="be">
+                            Any higher degree education or work experience in the relevent field.  <span class="required-text ms-2">*</span>
+                        </button>
+                </h2>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label cm">Degree Type <span class="required-text">*</span></label>
+                            <select class="form-select form-control" aria-label="Default select example" name='degree_type' required>
+                                <option selected>Select degree type:</option>
+                                {% for k,v in degrees %}
+                                <option value="{{k}}">{{v}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cm">Course <span class="required-text">*</span></label>
+                            <input type="text" class="form-control cm" placeholder="Enter subject name" name="course"required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cm">University <span class="required-text">*</span></label>
+                            <input type="text" class="form-control cm" placeholder="Enter university name" name='university'required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label cm">Country <span class="required-text">*</span></label>
+                            <select class="form-select form-control" aria-label="Default select example" name='country' required>
+                                <option selected>Select Country</option>
+                                {% for k,v in countries %}
+                                <option value="{{k}}">{{v}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cm">Institution Name <span class="required-text"></span></label>
+                            <input type="text" class="form-control cm" placeholder="Enter institution name" name="institution">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cm">Passed year <span class="required-text">*</span></label>
+                            <input type="text" class="form-control cm" placeholder="Enter passed year" name='passed_year' required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label cm">A valid certificate/Work experience letter  <span class="required-text">*</span></label>
+                            <input type="file" class="form-control cm" placeholder="Choose passport size photo" name='educational_document' required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Current Job Affiliation <span class="required-text">*</span></label>
+                            <input type="text" class="form-control cm" placeholder="Enter current job." name='work_experience' required>
+
+                        </div>
+                    </div>
+                    
+                <div class="button-container mt-2 d-flex justify-content-end">
+                <button type="submit" class="btn submit-btn" onclick="nextStep(this)">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}
+</div>
+
+</div>
+
+</div>
+{% endblock %}

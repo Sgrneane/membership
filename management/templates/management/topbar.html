@@ -1,0 +1,45 @@
+<div class="top-bar d-flex justify-content-between align-items-center">
+  <a class="hamburger" data-bs-toggle="offcanvas" href="#offcanvasExample"  aria-controls="offcanvasExample">
+    <span class="material-symbols-outlined">
+      menu
+      </span>
+  </a>
+  <p class="form-title mb-0 mbl-hide">NGS Membership Portal</p>
+  <div class="d-flex align-items-center">
+    <a href="/">
+      <div class="home-icon">
+        <span class="material-symbols-rounded">
+          home
+          </span>
+      </div>
+    </a>
+    <div class="dropdown-center">
+      <a class="dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="user-img-nav">
+          {% if request.user.role == 1 %}
+          <img src="https://ui-avatars.com/api/?name={{ request.user.full_name }}&rounded=true&background=FB802C&color=ffffff&size=28&bold=true">
+          {% else %}
+            {% if request.user.membership %}
+            <img src="{{ membership.pp_photo.url }}" alt="">
+            {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ request.user.full_name }}&rounded=true&background=FB802C&color=ffffff&size=28&bold=true">
+            {% endif %}
+          {% endif %}
+          
+        </div>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{% url 'account:my_account' %}">My Account</a></li>
+        <li><a class="dropdown-item" href="{% url 'account:change_password' %}">Change Password</a></li>
+        <li><a class="dropdown-item" href="{% url 'account:logout_user' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+

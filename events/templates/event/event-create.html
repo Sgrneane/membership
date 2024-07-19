@@ -1,0 +1,251 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+    <div class="main-section-container">
+        <div class="row back-link">
+            <a href="#" onclick="history.back()">
+                <div class="icon-box"><span class="material-symbols-outlined">arrow_back_ios</span></div>
+                Events <span style="color: #808080; margin-left: 5px;"> > Create</span>
+            </a>
+        </div>
+
+        <div class="multilevel-form">
+            <form id="twoStepForm" method="post" action="{% if event %}{% url 'events:edit_event' id=event.id %}{% else %}{% url 'events:eventadd' %}{% endif %}" enctype="multipart/form-data">
+                 {% csrf_token %}
+                <!-- {{ event_form.as_p }}
+                {{ ticket_type_formset.management_form }} -->
+                <div class="step" id="step1">
+                    <h3 class="form-title">Event Information</h3>
+                    <hr>
+                    {% if event_form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ event_form.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Event name <span class="required-text">*</span></label>
+                            <input type="text" class="form-control cm" name="name" placeholder="Enter event name" {% if event %} value="{{ event.name }}"{% endif %} required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label cm">Event date <span class="required-text">*</span></label>
+                            <input type="date" class="form-control cm" name="date" placeholder="Enter event date" {% if event %} value="{{ event.date|date:"Y-m-d" }}"{% endif %} required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label cm">Event duration <span class="required-text">*</span></label>
+                            <input type="text" class="form-control cm" name="duration" placeholder="Enter event duration (eg. 2 days)" {% if event %} value="{{ event.duration }}"{% endif %} required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label cm">Event type</label>
+                            <select class="form-select form-control" name="type">
+                                <option selected disabled>Select event type</option>
+                                <option value="1">Virtual Event</option>
+                                <option value="2">Physical Event</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cm">Platform or venue</label>
+                            <input type="text" class="form-control cm" name="veneu" {% if event %} value="{{ event.veneu }}"{% endif %} placeholder="Enter event platform or venue">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label cm">Event url (location or platform)</label>
+                            <input type="text" class="form-control cm" name="url_location" {% if event %} value="{{ event.url_location }}"{% endif %} placeholder="Enter event url (location or platform)">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Event description <span class="required-text">*</span></label>
+                            <textarea type="textarea" class="form-control cm" placeholder="Enter event description" rows="5" name="description" required>{% if event %}{{ event.description }}{% endif %}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Guest description (if any)</label>
+                            <textarea type="textarea" class="form-control cm" name="guest_description" placeholder="Enter guest description (if any)" rows="2">{% if event %}{{ event.guest_description }}{% endif %}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label cm">Pricing type</label>
+                            <select class="form-select form-control" name="pricing_type" id="pricing_type">
+                                <option selected disabled>Select pricing type</option>
+                                <option value="free">Free</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Event form fields -->
+                                
+                    <div class="row mb-3" id="ticket_pricing_fields">
+                        <div class="col-md-12">
+                            
+                            <h4 class="form-label mt-5">Ticket Types</h4>
+                            <hr>
+                            <div id="ticket_types">
+                                {% if ticket_types %}
+                                    {% for ticket_type in ticket_types %}
+                                        <div class="ticket-type">
+                                            <div class="row mb-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label cm">Ticket Type Name</label>
+                                                    <input type="text" class="form-control cm" name="ticket_type_name[]" value="{{ ticket_type.name }}" placeholder="Enter ticket type name">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label cm">Ticket Type Description</label>
+                                                    <input type="text" class="form-control cm" name="ticket_type_description[]" value="{{ ticket_type.description }}" placeholder="Enter ticket type description">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label cm">Limit</label>
+                                                    <input type="number" class="form-control cm" name="ticket_type_limit[]" value="{{ ticket_type.limit }}" placeholder="Enter ticket type limit">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label cm">Price</label>
+                                                    <input type="text" class="form-control cm" name="ticket_type_price[]" value="{{ ticket_type.price }}" placeholder="Enter ticket type price" step="0.01">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="ticket-type">
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label cm">Ticket Type Name</label>
+                                                <input type="text" class="form-control cm" name="ticket_type_name[]" placeholder="Enter ticket type name">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label cm">Ticket Type Description</label>
+                                                <input type="text" class="form-control cm" name="ticket_type_description[]" placeholder="Enter ticket type description">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label cm">Limit</label>
+                                                <input type="number" class="form-control cm" name="ticket_type_limit[]" placeholder="Enter ticket type limit">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label cm">Price</label>
+                                                <input type="text" class="form-control cm" name="ticket_type_price[]" placeholder="Enter ticket type price" step="0.01">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="button" class="btn submit-btn" id="add_ticket_type">Add ticket type</button>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Tickets or pricing description (if any)</label>
+                            <textarea type="textarea" class="form-control cm" name="ticket_pricing_description" placeholder="Enter ticketing or pricing description (if any)" rows="2">{% if event %}{{ event.ticket_pricing_description }}{% endif %}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Event banner</label>
+                            <input type="file" class="form-control cm" name="banner" placeholder="Choose event banner image">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Event Status:</label>
+                            <input type="checkbox" class="form-check-input" id="isActiveCheckbox" name="status" {% if event.status %}checked{% endif %}>
+                            <label class="form-check-label" for="isActiveCheckbox">Active</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Notify groups <span class="required-text">*</span></label>
+                            <select class="contact-list js-states form-control cm" name="groups" multiple="multiple">
+                                {% for group in groups %}
+                                <option value="{{ group.id }}" {% if event and group in event.groups.all %}selected{% endif %}>{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="button-container mt-2 d-flex justify-content-end">
+                        <button type="submit" class="submit-btn btn">{% if event %}Update{% else %}Create Event{% endif %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('pricing_type').addEventListener('change', function () {
+        var pricingType = this.value;
+        var ticketPricingFields = document.getElementById('ticket_pricing_fields');
+        var ticketTypesFields = document.getElementById('ticket_types');
+        var addTicketTypeBtn = document.getElementById('add_ticket_type');
+
+        if (pricingType === 'free') {
+            ticketPricingFields.style.display = 'none';
+            ticketTypesFields.style.display = 'none';
+            addTicketTypeBtn.style.display = 'none';
+        } else {
+            ticketPricingFields.style.display = 'block';
+            ticketTypesFields.style.display = 'block';
+            addTicketTypeBtn.style.display = 'block';
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', function () {
+        var pricingType = document.getElementById('pricing_type').value;
+        var ticketPricingFields = document.getElementById('ticket_pricing_fields');
+        var ticketTypesFields = document.getElementById('ticket_types');
+        var addTicketTypeBtn = document.getElementById('add_ticket_type');
+
+        if (pricingType === 'free') {
+            ticketPricingFields.style.display = 'none';
+            ticketTypesFields.style.display = 'none';
+            addTicketTypeBtn.style.display = 'none';
+        } else {
+            ticketPricingFields.style.display = 'block';
+            ticketTypesFields.style.display = 'block';
+            addTicketTypeBtn.style.display = 'block';
+        }
+    });
+
+    document.getElementById('add_ticket_type').addEventListener('click', function () {
+        var ticketTypesContainer = document.getElementById('ticket_types');
+        var ticketType = document.createElement('div');
+        ticketType.classList.add('ticket-type');
+        ticketType.innerHTML = `
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label cm">Ticket Type Name</label>
+                    <input type="text" class="form-control cm" name="ticket_type_name[]" placeholder="Enter ticket type name">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label cm">Ticket Type Description</label>
+                    <input type="text" class="form-control cm" name="ticket_type_description[]" placeholder="Enter ticket type description">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label cm">Limit</label>
+                    <input type="number" class="form-control cm" name="ticket_type_limit[]" placeholder="Enter ticket type limit">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label cm">Price</label>
+                    <input type="text" class="form-control cm" name="ticket_type_price[]" placeholder="Enter ticket type price" step="0.01">
+                </div>
+            </div>`;
+        ticketTypesContainer.appendChild(ticketType);
+    });
+</script>
+
+{% endblock %}

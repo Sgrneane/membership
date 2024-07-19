@@ -1,0 +1,53 @@
+{% extends 'layout/layout.html'%}
+{% load static %}
+{% block content %}
+<div class="form-body">
+    <div class="form-container">
+        <div class="row">
+            <div class="col-md-6 form-info">
+                <div class="info-box">
+                    <h2>Very good works are waiting for you login now</h2>
+                    <img src="{% static 'images/login.png' %}" alt="">
+                </div>
+            </div>
+            <div class="col-md-6 form">
+                <div class="row ms-2 back-link">
+                    <a href="#" onclick="history.back()">
+                        <div class="icon-box"><span class="material-symbols-outlined">
+                            arrow_back_ios
+                            </span></div> Back home</a>
+                </div>
+                
+                <form action="{% url 'account:resend_token' %}" method='post'>
+                    {% csrf_token %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    <div class="row">
+                    <div class="alert alert-primary">
+                        {{ message|escape }}
+                    </div>
+                    {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger">
+                        {{ message|escape }}
+                    </div>
+                {% endif %}
+            </div>
+                    {% endfor %}
+                    {% endif %}
+                    <div class="row mb-3">
+                        <label class="form-label cm">Type {{ request.user.first_name }}123 To get another token.</label>
+                        <input type="text" class="form-control cm" placeholder="Enter {{ request.user.first_name }}123"name="resend_token" required>
+                    </div>
+                    <div class="row">
+                        <button type="submit" class="submit-btn btn">Submit</button>
+                    </div>
+                </form>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

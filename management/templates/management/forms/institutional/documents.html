@@ -1,0 +1,68 @@
+{% extends 'management/forms/institutional/institutional_detail.html' %}
+{% load static %}
+{% block steps %}
+                        {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="row">
+                                <div class="alert alert-danger">
+                                    {{ error|escape }}
+                                    </div>
+                            </div>
+                                
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="row">
+                            <div class="alert alert-danger">
+                                {{ error|escape }}
+                                </div>
+                        </div>
+                        
+                        {% endfor %}
+                        {% endif %}
+<form method="post" action={% url 'management:complete_institutional_membership' id=request.user.membership.id %}  enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="step" id="step2">
+                            <h3 class="form-title">Institutional Documents</h3>
+                            <hr>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">Permanent account number <span class="required-text">*</span></label>
+                                    <input type="file" class="form-control cm" placeholder="Choose PAN card"  name='pan_document'required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">Registration certificate <span class="required-text">*</span></label>
+                                    <input type="file" class="form-control cm" placeholder="Choose registration certificate" name='registration_document' required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">Letter of application <span class="required-text">*</span></label>
+                                    <input type="file" class="form-control cm" placeholder="Choose letter of application" name='company_document'required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">Company logo <span class="required-text">*</span></label>
+                                    <input type="file" class="form-control cm" placeholder="Choose company logo" name='logo' required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">Working field ( description )</label>
+                                    <textarea type="textarea" class="form-control cm" placeholder="Describe your working field" rows="5" name='working_field'></textarea>
+                                </div>
+                            </div>
+                            <div class="button-container mt-2 d-flex justify-content-end">    
+                                <button type="sumbit" class="btn submit-btn" onclick="nextStep(this)">Sumbit</button>
+                            </div>                       
+    </div>
+</form>
+{% endblock %}

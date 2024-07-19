@@ -1,0 +1,338 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                    arrow_back_ios
+                                </span>
+                            </div>
+                            {% if request.user.role == 1%}
+                            Membership Request
+                            {% else %}
+                            Membership View
+                            {% endif %}<span style="color: #808080; margin-left: 5px;"> > {{ membership.name_of_applicant }}
+                                > View</span>
+                        </a>
+                    </div>
+
+
+                    <div class="content-container mt-4">
+                        <h3 class="form-title"> {{ membership.name_of_applicant }}'s Details</h3>
+                        <hr>
+
+                        <div class="detail-container">
+                            <h2 class="detail-title">Personal Information</h2>
+                        <div class="row mb-3 mt-4">
+                            <div class="col-md-4">
+                                <label class="form-label cm">Name</label>
+                                <p class="data">{{ membership.salutation }} {{ membership.name_of_applicant }}</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label cm">Phone Number</label>
+                                <p class="data">{{ membership.phone_number }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label cm">E-mail Address</label>
+                                <p class="data">{{ membership.associated_user.email }}</p>
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label cm">Gender</label>
+                                <p class="data">{{ membership.get_gender_display }}</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label cm">Affiliation</label>
+                                <p class="data">{{ membership.affiliation }}</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label cm"> Membership Type </label>
+                                <p class="data">{{ membership.get_membership_type_display }}</p>
+                            </div>
+                        </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12 text-end">
+                                    <a href="{% url 'management:edit_personal_info' id=membership.id %}" class="btn prev-btn btn-secondary">Edit</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        
+                        <div class="detail-container mt-5">
+                            <h2 class="detail-title">National Identity Card Information</h2>
+
+                                <div class="row mb-3 mt-4">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Nationality</label>
+                                        <p class="data">{{ membership.nationaldocument.get_nationality_display }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Citizenship/Passport Number</label>
+                                        <p class="data">{{ membership.nationaldocument.identity_card_no }}</p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Date of birth</label>
+                                        <p class="data">{{ membership.nationaldocument.dob }}</p>
+                                    </div>
+                                    
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Permanent Address</label>
+                                        <p class="data">{{ membership.nationaldocument.permanent_address }}</p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Identity Card Issued From</label>
+                                        <p class="data">{{ membership.nationaldocument.identity_issued_from }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12 text-end">
+                                        <a href="{% url 'management:edit_national_info' id=membership.id %}" class="btn prev-btn btn-secondary">Edit</a>
+                                    </div>
+                                </div>
+
+                        </div>
+                        <div class="detail-container mt-5">
+                            <h2 class="detail-title">Educational Information</h2>
+
+                            <section class="be">
+                                <div class="row mb-3 mt-4">
+                                    <div class="col-md-12">
+                                        <label class="data">Any Higher degree cetificate or Work Experience</label>
+                                        <hr>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Degree Type</label>
+                                        <p class="data">{{ membership.educational_information.get_degree_type_display }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Subject</label>
+                                        <p class="data">{{ membership.educational_information.course }}</p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">University</label>
+                                        <p class="data">{{ membership.educational_information.university }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Country</label>
+                                        <p class="data">{{ membership.educational_information.get_country_display}}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Institution name</label>
+                                        <p class="data">{{ membership.educational_information.institution }}</p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Passed year</label>
+                                        <p class="data">{{ membership.educational_information.passed_year }}</p>
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="row mb-3">
+                                <div class="col-md-12 text-end">
+                                    <a href="{% url 'management:edit_educational_info' id=membership.id %}" class="btn prev-btn btn-secondary">Edit</a>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="detail-container mt-5">
+                            <h2 class="detail-title">Documents</h2>
+
+                            <div class="row mb-3 mt-4">
+                                <div class="col-md-4">
+                                    <label class="form-label cm">Passport size photo</label>
+                                    
+                                    <a href="{{ membership.pp_photo.url }}" data-fancybox data-caption="Passport size photo">
+                                         <img src="{{ membership.pp_photo.url }}" alt="" class="document-image">
+                                    </a>
+                                    
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label cm">Citizenship</label>
+                                    {% if membership.identity_card_image.name|lower|get_file_extension != "pdf"%}
+                                    <a href="{{ membership.nationaldocument.identity_card_image.url }}" data-fancybox data-caption="Citizenship">
+                                        <img src="{{ membership.nationaldocument.identity_card_image.url }}" alt="" class="document-image">
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ membership.nationaldocument.identity_card_image.url }}" class="btn btn-apply w-100">View Document</a>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label cm">Highest degree certificate</label>
+                                    {% if membership.educational_information.educational_document.name|lower|get_file_extension != "pdf"%}
+                                    <a href="{{ membership.educational_information.educational_document.url }}" data-fancybox data-caption="Citizenship">
+                                        <img src="{{ membership.educational_information.educational_document.url }}" alt="" class="document-image">
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ membership.educational_information.educational_document.url }}" class="btn btn-apply w-100">View Document</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="detail-container mt-5">
+                            <h2 class="detail-title">Field of Expertise</h2>
+
+                            <div class="row mb-3 mt-4">
+                                <div class="col-md-12">
+                                    <label class="form-label cm">{{ membership.educational_information.work_experience }}</label>  
+                                </div>
+
+                            
+                            </div>
+                            
+                        </div>
+
+                        <div class="detail-container mt-5">
+                            <h2 class="detail-title">Payment Status</h2>
+
+                            {% if membership.payment.exists %}
+                            {% with last_payment=membership.payment.last %}
+                                {% if last_payment.payment_ss %}
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col-md-4">
+                                            {% if last_payment.payment_ss.name|lower|get_file_extension != "pdf" %}
+                                                <a href="{{ last_payment.payment_ss.url }}" data-fancybox data-caption="Payment">
+                                                    <img src="{{ last_payment.payment_ss.url }}" alt="" class="document-image">
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ last_payment.payment_ss.url }}" class="btn btn-apply w-100">View Document</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col-md-12">
+                                            <label class="data">Paid via Khalti</label>
+                                            {{ last_payment.pidx }}  {# corrected from membership.payment.pidx #}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            <div class="row mb-3 mt-4">
+                                <div class="col-md-12">
+                                    <label class="data">Payment Not done</label> 
+                                </div>
+                            </div>
+                        {% endif %}
+                        </div>
+
+                        {% if request.user.role == 2%}
+                        <div class="row mt-5">
+                            <div class="col-md-12 text-end">
+                                <form action="{% url 'management:resubmit_membership' id=membership.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn submit-btn">Update Information</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        
+                        {% if request.user.role == 1%}
+                        {% if membership.verification == False and membership.rejected == False %}
+                        <div class="mt-5">
+                            <h2 class="data">Please take further action for this membership.</h2>
+                            <div class="button-container mt-2 d-flex justify-content-start">
+                                <button type="button" class="btn btn-secondary reject-btn me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+                                <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#verifyModal">Verify</button>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
+                    </div>
+                     <!-- Reject Modal -->
+                     <div class="modal fade" id="rejectModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Membership rejection</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'management:reject_membership' id=membership.id %}" method='post'>
+                                    {% csrf_token %}
+                                    <label class="form-label cm">Rejection remarks <span class="required-text">*</span></label>
+                                    <textarea type="textarea" class="form-control cm"
+                                        placeholder="Enter rejection remarks" rows="5" name="remarks" required></textarea>
+                                
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-prev" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary reject-btn">Confirm</button>
+                            </div>
+                        </form>
+                        </div>
+                        </div>
+                    </div>
+                    <!-- Verify Modal -->
+                    <div class="modal fade" id="verifyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                    <form action="{% url 'management:verify_membership' id=membership.id %}" class="p-3" method="post">
+                        {% csrf_token %}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Membership verification</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4"
+                                    role="alert">
+                                    <span class="material-symbols-outlined me-2">
+                                        info
+                                    </span>
+                                    <div>
+                                        The latest membership no is <strong> {{ latest_id }}</strong>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                    <div class="row mb-2">
+                                        <label class="form-label cm">Membership no.<span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm"
+                                        placeholder="Enter membership number" name='membership_no' required></input>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <label class="form-label cm">Member since<span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm"
+                                            placeholder="Enter membership year" name='membership_since' required></input>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary prev-btn" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary submit-btn">Verify</button>
+                            </div>
+                        </div>
+                    </form>
+                        </div>
+                    </div>
+                </div>
+</div>
+{% endblock %}
+        

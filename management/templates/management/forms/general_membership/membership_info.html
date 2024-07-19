@@ -1,0 +1,101 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>New Membership <span style="color: #808080; margin-left: 5px;"> > General</span></a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        {% block steps %}
+                        
+                        {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="row">
+                                <div class="alert alert-danger">
+                                    {{ error|escape }}
+                                    </div>
+                            </div>
+                                
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="row">
+                            <div class="alert alert-danger">
+                                {{ error|escape }}
+                                </div>
+                        </div>
+                        
+                        {% endfor %}
+                    {% endif %}
+                        <form id="twoStepForm" action={% url 'management:general_membership_personal' %} method='post' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- Step 1 -->
+                            <div class="step" id="step1">
+                                <h3 class="form-title">Personal Information</h3>
+                                <hr>
+                                {% if request.resolver_match.url_name == 'lifetime_membership_personal' %}
+                                <input type="hidden"  name="membership_type" value="3">
+                                {% endif %}
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Salutation <span class="required-text">*</span></label>
+                                        <select class="form-select form-control" aria-label="Default select example" name='salutation'required>
+                                            <option selected disabled>Select Salutation</option>
+                                            {% for k , v in salutation %}
+                                            <option value="{{ k }}"{% if k == form.salutation.value %} selected {% endif %}>{{ v }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Name of applicant <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter applicant name" name='name_of_applicant' value="{{ request.user.full_name }}" style="font-weight:bold" readonly required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Phone Number <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter phone number" name='phone_number' {% if form.phone_number.value %} value='{{ form.phone_number.value }}'{% endif %}required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Gender <span class="required-text">*</span></label>
+                                        <select class="form-select form-control" aria-label="Default select example" name='gender' required>
+                                            <option selected disabled>Select Gender</option>
+                                            {% for k, v in gender %}
+                                            <option value="{{ k }}" {% if k == form.gender.value %}selected{% endif %}>{{ v }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Affiliation <span class="required-text"></span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter organization name"  {% if form.affiliation.value %} value ='{{ form.affiliation.value }}' {% endif %}name='affiliation'>
+                                    </div>
+                                </div>
+                                    <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label cm">Passport size photo of the applicant showing both ears <span class="required-text">*</span></label>
+                                        <input type="file" class="form-control cm" placeholder="Choose passport size photo" name='pp_photo' required>
+                                    </div>
+                                </div>
+            
+                                
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">Submit</button>
+                                </div>
+                              </div>
+                        </form>
+                        {% endblock %}
+                    </div>
+
+                </div>
+                
+</div>
+{% endblock %}

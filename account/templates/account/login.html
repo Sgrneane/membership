@@ -1,0 +1,65 @@
+{% extends 'layout/layout.html'%}
+{% load static %}
+{% block content %}
+<div class="form-body">
+    <div class="form-container">
+        <div class="row">
+            <div class="col-md-6 form-info">
+                <div class="info-box">
+                    <h2>Welcome to Membership Management System</h2>
+                    <img src="{% static 'images/login.png' %}" alt="">
+                </div>
+            </div>
+            <div class="col-md-6 form">
+                <div class="row ms-2 back-link">
+                    <a href="#" onclick="history.back()">
+                        <div class="icon-box"><span class="material-symbols-outlined">
+                            arrow_back_ios
+                            </span></div> Back home</a>
+                </div>
+                
+                <div class="row mt-3 mx-4 mb-0">
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-primary mb-0">
+                            {{ message|escape }}
+                        </div>
+                        {% elif message.tags == 'error' %}
+                        <div class="alert alert-danger mb-0">
+                            {{ message|escape }}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                    <form action="{% url 'account:login_user' %}" method='post'>
+                        {% csrf_token %}
+                    <div class="row mb-3">
+                        <label class="form-label cm">Email address</label>
+                        <input type="text" class="form-control cm" placeholder="Enter email address or phone number"name="email" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="form-label cm">Password</label>
+                        <input type="password" class="form-control" placeholder="Enter your password" name="password" required>
+                        <a href="{% url 'reset_password' %}" class="text-end fp">Forget password ?</a>
+                    </div>
+
+                    <div class="row">
+                        <button type="submit" class="submit-btn btn">Login</button>
+                    </div>
+
+                    <div class="row mt-5">
+                        <p class="dna">Don't have an account ? <a href="{% url 'account:signup' %}" class="text-end fp">Sign Up</a></p>
+                    </div>
+                    
+                </form>
+
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

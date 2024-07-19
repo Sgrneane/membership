@@ -1,0 +1,50 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+
+    <div class="main-section-container">
+        <div class="row back-link">
+            <a href="#" onclick="history.back()">
+                <div class="icon-box"><span class="material-symbols-outlined">
+                    arrow_back_ios
+                    </span>
+                </div> Not Participation List for {{ event }} <span style="color: #808080; margin-left: 5px;"></span>
+            </a>
+        </div>
+
+
+
+        <div class="multilevel-form">
+            <div class="step" id="step1">
+                <h3 class="form-title">Registered Members</h3>
+                <hr>
+
+                <table class="table not-participation-list">
+                    <thead>
+                        <tr>
+                            <th scope="col">S.No.</th>
+                            <th scope="col">Full Name</th>
+                            <th scope="col">Email Address</th>
+                            <th scope="col">Phone Number</th>
+                          </tr>
+                        </thead>
+                    </thead>
+                    <tbody>
+                    {% for participation in not_going_participants %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ participation.user.full_name }}</td>
+                            <td>{{ participation.user.email }}</td>
+                            <td>{{ participation.phone_number }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+    </div>
+
+{%endblock%}

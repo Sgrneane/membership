@@ -1,0 +1,92 @@
+{% extends 'login_layout/layout.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+                <div class="main-section-container">
+                    <div class="row back-link">
+                        <a href="#" onclick="history.back()">
+                            <div class="icon-box"><span class="material-symbols-outlined">
+                                arrow_back_ios
+                                </span></div>Complete Membership Registration <span style="color: #808080; margin-left: 5px;"> > {{ request.user.full_name }}</span></a>
+                    </div>
+
+                    <div class="multilevel-form">
+                        {% block steps %}
+                        
+                        {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="row">
+                                <div class="alert alert-danger">
+                                    {{ error|escape }}
+                                    </div>
+                            </div>
+                                
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="row">
+                            <div class="alert alert-danger">
+                                {{ error|escape }}
+                                </div>
+                        </div>
+                        
+                        {% endfor %}
+                    {% endif %}
+                    {% if  not request.user.membership.nationaldocument%}
+                        <form id="twoStepForm" action={% url 'management:complete_registration_national_document' id=request.user.membership.id %} method='post' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- Step 1 -->
+                            <div class="step" id="step1">
+                                <h3 class="form-title">National Document Information</h3>
+                                <hr>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Nationality <span class="required-text">*</span></label>
+                                        <select class="form-select form-control" aria-label="Default select example"  name='nationality'required>
+                                            <option value="" selected disabled>select country</option>
+                                            {% for k, v in countries %}
+                                                <option value="{{k}}" {% if k == form.nationality.value %} selected{% endif %}>{{v}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Citizenship or passport no. <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter citizenship or passport no." name='identity_card_no' {% if form.identity_card_no.value %}value='{{ form.identity_card_no.value }}'{% endif %}required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Date of birth <span class="required-text">*</span></label>
+                                        <input type="date" class="form-control cm" placeholder="Enter date of birth" name='dob' {% if form.dob.value %}value ='{{ form.dob.value|date:'Y-m-d' }}'{% endif %} required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Permanent address <span class="required-text"></span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter permanent address" name='permanent_address' {% if form.permanent_address.value %}value='{{ form.permanent_address.value }}'{% endif %}required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label cm">Issued from <span class="required-text">*</span></label>
+                                        <input type="text" class="form-control cm" placeholder="Enter issued location or department"name='identity_issued_from' {% if form.identity_issued_from.value %}value='{{ form.identity_issued_from.value }}'{% endif %} required>
+                                    </div>
+                                </div>
+                                    <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label cm">Citizenship/Passport(Upload file upto 1MB size) <span class="required-text">*</span></label>
+                                        <input type="file" class="form-control cm" placeholder="Choose passport size photo" name='identity_card_image' required>
+                                    </div>
+                                </div>
+                                <div class="button-container mt-2 d-flex justify-content-end">
+                                    <button type="submit" class="submit-btn btn" onclick="nextStep(this)">Submit</button>
+                                </div>
+                              </div>
+                        </form>
+                        {% endif %}
+                        {% endblock %}
+                    </div>
+
+                </div>
+                
+</div>
+{% endblock %}

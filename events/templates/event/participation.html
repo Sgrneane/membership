@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participate in Event</title>
+</head>
+<body>
+    <h1>Participate in Event</h1>
+    
+    {% if form.errors %}
+        <p>There was an error processing your form. Please correct the errors below.</p>
+    {% endif %}
+
+    <form class="form" method="POST" action="">
+        {% csrf_token %}
+      <div class="flex-column">
+        <label>name</label>
+      </div>
+      <div class="inputForm">
+        <input placeholder="Enter your Name" name="name" class="input" type="text" required />
+      </div>
+      <div class="flex-column">
+        <label>Email </label>
+      </div>
+      <div class="inputForm">
+        <input placeholder="Enter your Email" name="email" class="input" type="text" required />
+      </div>
+
+      <div class="flex-column">
+        <label>Phone </label>
+      </div>
+      <div class="inputForm">
+        <input
+          placeholder="phone number"
+          name="phone"
+          class="input"
+          type="number"
+          required
+        />
+      </div>
+
+      <button class="button-submit">Submit</button>
+    </form>
+</body>
+</html>
