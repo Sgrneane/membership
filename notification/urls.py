@@ -3,6 +3,7 @@ from django.urls import path
 
 from . import views
 
+
 app_name='notification'
 urlpatterns = [
     path('create-group',views.create_group,name='create_group'),
@@ -14,4 +15,6 @@ urlpatterns = [
     path('edit-notification/<int:id>',views.create_notification,name="edit_notification"),
     path('view-notification/<int:id>',views.view_notification,name="view_notification"),
     path('all-notifications',views.all_notifications,name='all_notifications'),
+    path('create-update-groups/',views.create_or_update_groups_and_missing_members, name='create_or_update_groups_and_missing_members'),
+
 ]

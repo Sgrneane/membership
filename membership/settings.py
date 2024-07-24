@@ -109,28 +109,28 @@ WSGI_APPLICATION = "membership.wsgi.application"
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kantggjb_membershipdb', #lims_new
-        'USER': 'kantggjb_membershipuser',
-        'PASSWORD':'b2jXog&4--R?',
-        'HOST':'localhost',
-        'PORT': '3306',#3308
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        }
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',  # BASE_DIR is usually defined at the top of settings.py
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'kantggjb_membershipdb', #lims_new
+#         'USER': 'kantggjb_membershipuser',
+#         'PASSWORD':'b2jXog&4--R?',
+#         'HOST':'localhost',
+#         'PORT': '3306',#3308
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             'charset': 'utf8mb4',
+#         }
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # BASE_DIR is usually defined at the top of settings.py
+    }
+}
 
 
 AUTH_PASSWORD_VALIDATORS = [

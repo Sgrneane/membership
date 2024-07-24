@@ -14,8 +14,6 @@ from management.models import Membership
 
 
 
-
-
 # Create your views here.
 
 def all_events(request):
