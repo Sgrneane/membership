@@ -9,7 +9,8 @@ from account.models import CustomUser
 from django.http import HttpResponseRedirect
 from django.forms import modelformset_factory
 import json
-
+from django.http import HttpResponseForbidden
+from management.models import Membership
 
 
 
@@ -67,6 +68,9 @@ def all_events(request):
 
 def events_add(request, id=None):
     event = get_object_or_404(Event, id=id) if id else None
+
+    ticket_types = None  # Define ticket_types initially
+
     
     if request.method == 'POST':
         event_form = EventForm(request.POST, request.FILES, instance=event)
@@ -79,6 +83,11 @@ def events_add(request, id=None):
         if event_form.is_valid():
             event = event_form.save(commit=False)
             event.save()
+
+            # Clear existing ticket types if event exists
+            if event.id:
+                TicketType.objects.filter(event=event).delete()
+
             
             for ticket_type_name, ticket_type_description, ticket_type_price, ticket_type_limit in zip(
                 ticket_type_names,ticket_type_descriptions,ticket_type_prices,ticket_type_limits):
@@ -103,14 +112,31 @@ def events_add(request, id=None):
         else:
             print("Event Form Errors:", event_form.errors)
             print("Event Form Non-Field Errors:", event_form.non_field_errors())
+        
+        # Set ticket_types if the form is invalid, to retain user input
+        ticket_types = [
+            {'name': name, 'description': description, 'limit': limit, 'price': price}
+            for name, description, limit, price in zip(ticket_type_names, ticket_type_descriptions, ticket_type_limits, ticket_type_prices)
+        ]
+
     else:
         event_form = EventForm(instance=event)
+        ticket_types = TicketType.objects.filter(event=event) if event else None
+
     
-    return render(request, 'event/event-create.html', {'event_form': event_form, 'groups': Groups.objects.all(), 'event': event})
+    return render(request, 'event/event-create.html', {
+        'event_form': event_form,
+        'groups': Groups.objects.all(),
+        'event': event,
+        'ticket_types': ticket_types,
+    })
+
 
 def view_event(request,id):
     event= get_object_or_404(Event, id=id)
     remaining_groups = Groups.objects.exclude(events=event)
+
+    ticket_types = TicketType.objects.filter(event=event) if event else None
 
     if request.method == 'POST':
         opt = request.POST.get('hello')
@@ -132,11 +158,28 @@ def view_event(request,id):
     context={
         'event': event,
         'groups':remaining_groups,
+        'ticket_types': ticket_types,
     }
     return render(request,'event/view_event.html',context)
 
+def delete_event(request, id):
+    event = get_object_or_404(Event, id=id)
+
+    if request.user.role != CustomUser.ADMIN:
+        return HttpResponseForbidden("You are not authorized to delete this event.")
+
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, "Event deleted successfully.")
+        return redirect('events:all_events')
+
+    return redirect('events:view_event', id=id)
+
+
 def homepage_view_event(request,id):
     event= get_object_or_404(Event, id=id)
+    ticket_types = TicketType.objects.filter(event=event) if event else None
+
     if Participation.objects.filter(event=event, email=request.POST.get('email')).exists():
         return HttpResponse("You have already participated in this event")
     
@@ -155,14 +198,24 @@ def homepage_view_event(request,id):
             return redirect('events:all_events')
     context={
         'event': event,
+        'ticket_types': ticket_types,
     }
     return render(request,'event/homepage/view_event.html',context)
 
 def index_all_events(request):
+    user = request.user
+    membership = None
+    if user.is_authenticated:
+        try:
+            membership = Membership.objects.select_subclasses().filter(associated_user=user).first()
+        except Membership.DoesNotExist:
+            membership = None
+
     data = {
-        'events':Event.objects.all()
+        'events': Event.objects.filter(status=True),
+        'membership': membership,
     }
-    return render(request,'event/index_events.html',data)
+    return render(request, 'event/index_events.html', data)
 
 def participate(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -180,52 +233,6 @@ def participate(request, event_id):
     else:
         # Redirect to registration page with event_id as a query parameter
         return redirect(reverse('events:participation') + f'?event_id={event_id}')
-
-
-# def unauth_payment_process(request, event_id, name, email, phone):
-#     event = get_object_or_404(Event, id=event_id)
-    
-#     if Participation.objects.filter(event=event, email=email).exists():
-#         return HttpResponse("You have already participated in this event")
-
-#     if request.method == 'POST':
-#         ticket_type = request.POST.get('ticket_type')  # Get selected ticket type
-#         amount_paid = event.get_ticket_prices().get(ticket_type, 0)  # Get the price for the selected ticket type
-        
-#         # Handle file upload
-#         payment_screenshot = request.FILES.get('payment_ss')
-
-#         # Create Participation object
-#         Participation.objects.create(event=event, name=name, email=email, phone_number=phone, ticket_type=ticket_type, amount_paid=amount_paid,payment_screenshot=payment_screenshot)
-        
-#         # Redirect to the all events page
-#         return render(request, 'event/payment_process.html', {'amount_paid': amount_paid,'event':event,'name': name})
-#     else:
-#         return render(request, 'event/payment_process.html', {'event': event,'name': name})
-
-
-
-
-# def auth_payment_process(request, event_id):
-#     event = get_object_or_404(Event, id=event_id)
-    
-#     if Participation.objects.filter(event=event, user=request.user).exists():
-#         return HttpResponse("You have already participated in this event")
-    
-#     if request.method == 'POST':
-#         ticket_type = request.POST.get('ticket_type')  # Get selected ticket type
-#         amount_paid = event.get_ticket_prices().get(ticket_type, 0)  # Get the price for the selected ticket type
-#         payment_screenshot = request.FILES.get('payment_ss')
-
-        
-        
-#         # Create Participation object
-#         Participation.objects.create(event=event, user=request.user, ticket_type=ticket_type, amount_paid=amount_paid,payment_screenshot=payment_screenshot)
-        
-#         # Redirect to the all events page
-#         return render(request, 'event/payment_process.html', {'amount_paid': amount_paid,'event':event,'name': request.user.full_name})
-#     else:
-#         return render(request, 'event/payment_process.html', {'event': event,'name': request.user.full_name})
 
 
 def unauth_payment_process(request, event_id, name, email, phone):

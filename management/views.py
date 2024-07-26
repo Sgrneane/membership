@@ -7,7 +7,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from . import forms
-from .models import (Membership,GeneralMembership,InstitutionalMembership,EducationalDocuments,Payment,NationalDocumment,FAQ)
+from .models import (Membership,GeneralMembership,InstitutionalMembership,EducationalDocuments,Payment,NationalDocumment,FAQ,ActionLog)
 from .import choices
 from .currency_converter import currency_rates
 from membership.tasks import send_token_mail
@@ -16,21 +16,57 @@ from account.decorators import is_user,is_admin
 from events.models import Event
 import pandas as pd
 
+from .forms import VerificationForm
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
+
 # Create your views here.
+# def index(request):
+#     events=Event.objects.all()
+#     faqs=FAQ.objects.all()
+#     context={
+#         'events':events,
+#         'faqs':faqs
+#     }
+#     return render(request,'management/index.html',context)
+
 def index(request):
     events=Event.objects.all()
     faqs=FAQ.objects.all()
+    user= request.user
+    membership=None
+    try:
+        membership=user.membership
+        membership=Membership.objects.select_subclasses().filter(associated_user=user).first()
+        print(membership.verification)
+    except:
+        membership=None
+
     context={
         'events':events,
-        'faqs':faqs
+        'faqs':faqs,
+        'membership':membership,
     }
     return render(request,'management/index.html',context)
 
 
 
 def membership_guidelines(request):
-    return render(request,'management/membership_guidelines.html')
+    user = request.user
+    membership = None
+    if user.is_authenticated:
+        try:
+            membership = Membership.objects.select_subclasses().filter(associated_user=user).first()
+            # Assuming 'associated_user' is the ForeignKey or OneToOneField in the Membership model
+        except Membership.DoesNotExist:
+            membership = None
 
+    context = {
+        'membership': membership,
+    }
+    return render(request, 'management/membership_guidelines.html', context)
 
 def general_members(request):
     general_membership = GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True))
@@ -71,7 +107,7 @@ def user_dashboard(request):
         student_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True)).count()
         lifetime_membership_count=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True)).count()
         institutional_membership_count=InstitutionalMembership.objects.filter(verification=True).count()
-        events = Event.objects.all()
+        events = Event.objects.filter(status =True)
         membership=None
         try:
             membership=user.membership
@@ -166,6 +202,22 @@ def complete_registration_educational_document(request,id):
             educational_document = EducationalDocuments.objects.create(**form.cleaned_data)
             member.educational_information=educational_document
             member.save()
+
+            # # Send email notification
+            # subject = "Registration complete"
+            
+            # message = "Thank you for applying. Please expect your application to be verified within 15 working days from the date of registration."
+            # recipient_list = [member.associated_user.email]
+            # send_mail(subject, message, None, recipient_list)
+
+            # Send email notification
+            subject = "Registration complete"
+            context = {'user': member.associated_user}
+            message = render_to_string('management/email/registration_complete.html', context)           
+            email = EmailMessage(subject, message, to=[member.associated_user.email])
+            email.content_subtype = "html"  # Main content is now text/html
+            email.send()
+
             messages.success(request,'Congratulations!! Your registration is complete.')
             return redirect('management:user_dashboard')
         else:
@@ -253,8 +305,10 @@ def complete_institutional_membership(request,id):
 @is_admin
 def view_general_membership_list(request):
     general_membership = GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=False))
+    logs = ActionLog.objects.all().order_by('-timestamp')  # Fetch all logs
     context ={
-        'members': general_membership
+        'members': general_membership,
+        'logs':logs,
     }
     return render(request,'management/listview/general_membership_list.html',context)
 
@@ -287,7 +341,11 @@ def view_institutional_membership_list(request):
 @login_required
 def view_membership(request,id):
     general_membership_instance= Membership.objects.select_subclasses().get(id=id)
-    latest_membership = Membership.objects.filter(verification=True).last()
+    latest_membership = Membership.objects.filter(verification=True).order_by('-created_at').first()  # Ensure ordering to get the latest
+
+    # Fetch logs for the current user or membership
+    logs = ActionLog.objects.filter(user=general_membership_instance.associated_user)
+    
     if(latest_membership):
         latest_membership_number = latest_membership.membership_number
     else:
@@ -296,12 +354,14 @@ def view_membership(request,id):
     if isinstance(general_membership_instance, GeneralMembership):
         context={
                 'membership':general_membership_instance,
-                'latest_id' : latest_membership_number
+                'latest_id' : latest_membership_number,
+                'logs':logs
             }
         if general_membership_instance.rejected == True:
             return render(request,'management/views/edit_membership.html',context)
         else:
             return render(request,'management/views/view_membership.html',context)
+        
     if isinstance(general_membership_instance, StudentMembership):
         context={
                 'membership':general_membership_instance,
@@ -321,10 +381,11 @@ def view_membership(request,id):
         else:
              return render(request,'management/views/view_institutional_membership.html',context)
     
+    
 @login_required
 def edit_membership(request,id):
     membership_instance= Membership.objects.select_subclasses().get(id=id)
-    latest_membership = Membership.objects.filter(verification=True).last()
+    latest_membership = Membership.objects.filter(verification=True).order_by('-created_at').first()  # Ensure ordering to get the latest
     latest_membership_number = latest_membership.membership_number
     if isinstance(membership_instance, GeneralMembership):
         context={
@@ -364,7 +425,10 @@ def edit_personal_info(request,id):
                 pass
             membership_instance.salutation = form.cleaned_data['salutation']
             membership_instance.save()
-            return redirect('management:edit_membership',id=membership_instance.id)
+            if request.user.role ==1:
+                return redirect('management:edit_membership',id=membership_instance.id)
+            else:
+                return redirect('/user-dashboard',id=membership_instance.id)
         else:
             print(form.errors)
     else:
@@ -511,30 +575,75 @@ def resubmit_membership(request,id):
         return redirect('management:user_dashboard')
 
 
+# @is_admin
+# def verify_membership(request,id):
+#     membership_object = get_object_or_404(Membership, id=id)
+#     if request.method == "POST":
+#         form = forms.VerificationForm(request.POST)
+#         if form.is_valid():
+#             membership_since = form.cleaned_data.get("membership_since")
+#             membership_object.membership_since = membership_since
+#             membership_object.verification = True
+#             membership_object.verified_date = datetime.now()
+#             membership_object.save()
+#             messages.success(request, "Membership Verified")
+#             # try:
+#             #     subject="Your account has been verified."
+#             #     message=f"Yor membership for Nepal Geotechnical Society is verified now."
+#             #     send_token_mail(membership_object.associated_user.email,subject,message)
+#             # finally:
+#             return redirect("management:all_approved_membership_list")
+#         else:
+#             messages.error(
+#                 request,
+#                 "Enter  membership year to verify the member",
+#             )
+#             return redirect("management:verify_membership", id=membership_object.id)
+
+
 @is_admin
-def verify_membership(request,id):
+def verify_membership(request, id):
     membership_object = get_object_or_404(Membership, id=id)
+    
     if request.method == "POST":
-        form = forms.VerificationForm(request.POST)
+        form = VerificationForm(request.POST)
         if form.is_valid():
             membership_since = form.cleaned_data.get("membership_since")
+            membership_number = form.cleaned_data.get("membership_no")
+            membership_object.membership_number = membership_number
             membership_object.membership_since = membership_since
             membership_object.verification = True
             membership_object.verified_date = datetime.now()
-            membership_object.save()
+
+            if Membership.objects.filter(membership_number=membership_number).exclude(id=id).exists():
+                messages.error(request,"The membership number is already in use. Please use a different number.")
+                return redirect("management:view_general_membership_list")
+            else:
+                membership_object.save()
+
+            
+            # Send email notification
+            subject = "Membership Approval"
+            context = {'user': membership_object.associated_user}
+            message = render_to_string('management/email/membership_approved.html', context)           
+            email = EmailMessage(subject, message, to=[membership_object.associated_user.email])
+            email.content_subtype = "html"  # Main content is now text/html
+            email.send()
+
             messages.success(request, "Membership Verified")
-            # try:
-            #     subject="Your account has been verified."
-            #     message=f"Yor membership for Nepal Geotechnical Society is verified now."
-            #     send_token_mail(membership_object.associated_user.email,subject,message)
-            # finally:
             return redirect("management:all_approved_membership_list")
         else:
-            messages.error(
-                request,
-                "Enter  membership year to verify the member",
-            )
+            messages.error(request, "Enter membership year to verify the member")
             return redirect("management:verify_membership", id=membership_object.id)
+    
+    # else:
+    #     form = VerificationForm()
+    #     context = {
+    #         'form': form,
+    #         'membership': membership_object,
+    #         'latest_id': Membership.objects.latest('id').membership_number if Membership.objects.exists() else None
+    #     }
+    #     return render(request, 'management/views/view_membership.html', context)
 
 @is_admin
 def reject_membership(request,id):
@@ -557,8 +666,11 @@ def reject_membership(request,id):
 @is_admin
 def all_approved_membership_list(request):
     members=Membership.objects.select_subclasses().filter(verification=True)
+    logs = ActionLog.objects.all().order_by('-timestamp')  # Fetch all logs
+
     context={
         'members':members,
+        'logs':logs,
     }
     return render(request,'management/listview/all_approved_membership_list.html',context)
 

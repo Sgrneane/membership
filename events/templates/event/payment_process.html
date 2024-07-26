@@ -36,7 +36,7 @@
                             <select id="ticket_type" class="form-select form-control" aria-label="Default select example" name='ticket_type' required>
                                 <option value="" disabled selected>Select Ticket Type</option>
                                 {% for ticket_type in ticket_types %}
-                                <option value="{{ ticket_type.id }}">{{ ticket_type.name }} - ${{ ticket_type.price }}</option>
+                                <option value="{{ ticket_type.id }}">{{ ticket_type.name }} - {{ ticket_type.price }}</option>
                                 {% endfor %}
                             </select>
                         </div>

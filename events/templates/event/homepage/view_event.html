@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -127,9 +128,36 @@
                 <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="form-label cm">Teckets or pricing description</label>
-                        <p class="card-text event-desc">
+                        <div class="event-desc">
+                          {% if event.pricing_type == 'paid' and ticket_types %}
+                          <table class="w-100 mb-3 border">
+                            <thead>
+                              <tr>
+                                <th class="form-label p-1">Ticket Type</th>
+                                <th class="form-label p-1">Ticket Description</th>
+                                <th class="form-label p-1">Ticket Limit (Number of tickets)</th>
+                                <th class="form-label p-1">Ticket Price</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                          
+                            {% for ticket_type in ticket_types %}
+                                <tr class="card-text">
+                                  <td class="card-text p-1">{{ ticket_type.name }}</td> 
+                                  <td class="card-text p-1">{{ ticket_type.description }}</td>
+                                  <td class="card-text p-1">{{ ticket_type.limit }}</td>
+                                  <td class="card-text p-1">{{ ticket_type.price }}</td> 
+                                </tr>
+                          {% endfor %}
+                        </tbody>
+                        </table>
+                          {% endif %}
+  
+                          <p class="card-text">
                             {{ event.ticket_pricing_description}}
                         </p>
+                      </div>
+  
                     </div>
                 </div>
 
@@ -142,14 +170,15 @@
 
                     {% else %}
 
-                        <div class="col-md-12">
-                            <label class="form-label cm">Platform link</label>
-                            <p class="data d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">
-                                attach_file
-                                </span><a href=""{{ event.url_location }}""></a> 
-                            </p>
-                        </div>        
+                    <div class="col-md-12">
+                      <label class="form-label cm">Platform link</label>
+                      <p class="data d-flex align-items-center">
+                          <span class="material-symbols-outlined me-2">
+                              attach_file
+                          </span>
+                          <a href="{{ event.url_location }}" target="_blank" rel="noopener noreferrer">{{ event.url_location }} </a> 
+                      </p>
+                  </div>       
                     </div>
                 {% endif %}
 

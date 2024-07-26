@@ -14,11 +14,11 @@ DEGREE_TYPES=(("BE","Bachelor"),
 STUDENT_LEVEL_CHOICES = (("U", "Undergraduate"), ("P", "Postgraduate"))
 
 SALUTATION_CHOICES = (
-    ("P", "Prof"),
-    ("D", "Dr"),
-    ("E", "Er"),
-    ("MR", "Mr"),
-    ("MS", "Ms"),
+    ("Prof.", "Prof"),
+    ("Dr.", "Dr"),
+    ("Er.", "Er"),
+    ("MR.", "Mr"),
+    ("MS.", "Ms"),
 )
 
 COUNTRY_CHOICES = (

@@ -44,12 +44,12 @@
                     {% if request.user.paid_payment.exists %}
                     <div class="multilevel-form">
                         <div class="step" id="step1">
-                            <h3 class="form-title">Hey {{ request.user.first_name }},</h3>
+                            <h3 class="form-title">Hey {{ request.user.full_name }},</h3>
                             <p class="label mb-0">Congratulations! <br>
                                 {% if request.user.membership.verification == True %}
                                 Your membership has been verified, and you've successfully made a payment of <span class="data" style="color: #007ade;">{{ paid_amount }}</span> for a <span class="data" style="color: #007ade;">{{ request.user.membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p>
                                 {% else %}
-                                You've successfully made a payment of <span class="data" style="color: #007ade;">{{ paid_amount }}</span> for a <span class="data" style="color: #007ade;">{{ request.user.membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p>
+                                Your payment of <span class="data" style="color: #007ade;">{{ paid_amount }}</span> for a <span class="data" style="color: #007ade;">{{ request.user.membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p> is under verification process.
                                 {% endif %}
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                     
                     <div class="multilevel-form">
                         <div class="step" id="step1">
-                            <h3 class="form-title">Hey {{ request.user.first_name }},</h3>
+                            <h3 class="form-title">Hey {{ request.user.full_name }},</h3>
                             <p class="label">Your membership application has been saved. <br>Please deposit an amount of <span class="data" style="color: #007ade;">
                                 
                                 {% if request.user.membership.membership_type == 1%}Rs. 2000
@@ -85,7 +85,7 @@
                                             <div class="qr-code h-100">
                                                 <div>
                                                     <label class="data cm text-center">Scan the QR below to pay</label>
-                                                    <img src="{% static 'images/qrcode.jpg'%}" alt="QR code" class="qrcode-image">
+                                                    <img src="https://kantipurinfotech.com/wp-content/uploads/2024/07/newqrcode.jpg" alt="QR code" class="qrcode-image">
                                                 </div> 
                                             </div>
                                         </div>
@@ -167,16 +167,16 @@
                                 Your membership has been verified, and you've successfully made a payment of <span class="data" style="color: #007ade;">
                                     {% if membership.upgrade_membership_type == 1 %} RS. 1000{% else %}Rs. 10000 {% endif %}</span> for a <span class="data" style="color: #007ade;">{{ membership.get_upgrade_membership_type_display }} Membership </span>on {{ paid_date }}</p>
                                 {% else %}
-                                You've successfully made a payment of <span class="data" style="color: #007ade;">
+                                Your payment of <span class="data" style="color: #007ade;"> 
                                     {% if membership.upgrade_membership_type == 1 %} RS. 1000{% else %}Rs. 10000 {% endif %}
-                                </span> for a <span class="data" style="color: #007ade;">{{ membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p>
+                                </span> for a <span class="data" style="color: #007ade;">{{ membership.get_membership_type_display }} Membership </span>on {{ paid_date }}</p> is under verification process.
                                 {% endif %}
                         </div>
                     </div>
                 {% else %}
             <div class="multilevel-form">
                 <div class="step" id="step1">
-                    <h3 class="form-title">Hey {{ request.user.first_name }},</h3>
+                    <h3 class="form-title">Hey {{ request.user.full_name }},</h3>
                     <p class="label">Your request to upgrade membership is successful.<br>Please deposit an amount of <span class="data" style="color: #007ade;">
                         
                         {% if membership.upgrade_membership_type == 1%}Rs. 2000
@@ -190,7 +190,7 @@
                                     <div class="qr-code h-100">
                                         <div>
                                             <label class="data cm text-center">Scan the QR below to pay</label>
-                                            <img src="{% static 'images/qrcode.jpg'%}" alt="QR code" class="qrcode-image">
+                                            <img src="https://kantipurinfotech.com/wp-content/uploads/2024/07/newqrcode.jpg" alt="QR code" class="qrcode-image">
                                         </div> 
                                     </div>
                                 </div>

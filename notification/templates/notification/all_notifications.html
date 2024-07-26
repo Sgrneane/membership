@@ -1,214 +1,196 @@
 {% extends 'login_layout/layout.html' %}
 {% load static %}
 {% block content %}
-
-        <div class="col-md-9 my-profile-w-80 g-0">
-                {% include 'management/topbar.html' %}
-
-                <div class="main-section-container">
-                    <div class="row back-link">
-                        <a href="#" onclick="history.back()">
-                            <div class="icon-box"><span class="material-symbols-outlined">
-                                arrow_back_ios
-                                </span>
-                            </div>Notifications Mail <span style="color: #808080; margin-left: 5px;"> > All</span>
-                        </a>
+<div class="col-md-9 my-profile-w-80 g-0">
+    {% include 'management/topbar.html' %}
+    <div class="main-section-container">
+        <div class="row back-link">
+            <a href="#" onclick="history.back()">
+                <div class="icon-box"><span class="material-symbols-outlined">
+                    arrow_back_ios
+                    </span>
+                </div>Notifications Mail <span style="color: #808080; margin-left: 5px;"> > All</span>
+            </a>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-2">
+                <div class="d-flex align-items-start">
+                    <div class="nav flex-column nav-pills me-3 mail-navigation" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link active" id="v-pills-all-tab" data-bs-toggle="pill" data-bs-target="#v-pills-all" type="button" role="tab" aria-controls="v-pills-all" aria-selected="true">All Mails</button>
+                        <button class="nav-link" id="v-pills-sent-tab" data-bs-toggle="pill" data-bs-target="#v-pills-sent" type="button" role="tab" aria-controls="v-pills-sent" aria-selected="false">Sent Mails</button>
+                        <button class="nav-link" id="v-pills-draft-tab" data-bs-toggle="pill" data-bs-target="#v-pills-draft" type="button" role="tab" aria-controls="v-pills-draft" aria-selected="false">Draft Mails</button>
                     </div>
-
-
-                    <div class="row mt-4">
-                        <div class="col-md-2">
-                            <div class="d-flex align-items-start">
-                                <div class="nav flex-column nav-pills me-3 mail-navigation" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                  <button class="nav-link active" id="v-pills-all-tab" data-bs-toggle="pill" data-bs-target="#v-pills-all" type="button" role="tab" aria-controls="v-pills-all" aria-selected="true">All Mails</button>
-                                  <button class="nav-link" id="v-pills-sent-tab" data-bs-toggle="pill" data-bs-target="#v-pills-sent" type="button" role="tab" aria-controls="v-pills-sent" aria-selected="false">Sent Mails</button>
-                                  <button class="nav-link" id="v-pills-draft-tab" data-bs-toggle="pill" data-bs-target="#v-pills-draft" type="button" role="tab" aria-controls="v-pills-draft" aria-selected="false">Draft Mails</button>
-                                </div>
-                              </div>
-                        </div>
-                        <div class="col-md-10">
-
-                            <div class="row mb-4 filter-row filters">
-                                <div class="col-md-3">
-                                    <select id="payment" class="form-select form-control">
-                                        <option value="all" draft selected>Mail Status</option>
-                                        <option value="Sent">Sent</option>
-                                        <option value="Draft">Draft</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="date" id="min" class="form-control" placeholder="Requested from">
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="date" id="max" class="form-control" placeholder="Requested from">
-                                </div>
-                                <div class="col-md-3">
-                                    <button id="reset" class="submit-btn btn w-100">Reset</button>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="v-pills-tabContent">
-                                <div class="tab-pane fade show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab" tabindex="0">
-                                    <div class="content-container">
-                                        <h3 class="form-title">All mails</h3>
-                                        <hr>
-                
-                                        <table id="sampleTable" class="table hover-table" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>S No.</th>
-                                                    <th>Mail Subject</th>
-                                                    <th>Mailing Groups</th>
-                                                    <th>Mail Status</th>
-                                                    <th>Composed Date</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    {% for notification in notifications %}
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>{{ notification.subject }}</td>
-                                                    <td>{% for group in notification.groups.all %}
-                                                        {{ group.name }}
-                                                        {% endfor %}
-                                                    </td>
-                                                    <td><div class="verified">{% if notification.status == True %}Sent{% else %} Draft {%endif%} </div></td>
-                                                    <td>{{ notification.created_at }}</td>
-                                                    <td>
-                                                        <div class="d-flex kit-action-com">
-                                                                <div class="action-btn-pen">
-                                                                    <a href="{% url 'notification:edit_notification' id=notification.id %}"><span class="material-symbols-outlined">
-                                                                        edit
-                                                                        </span>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="action-btn-view">
-                                                                    <a href="{% url 'notification:view_notification' id=notification.id %}" >
-                                                                        <span class="material-symbols-outlined">visibility</span>
-                                                                    </a>
-                                                                </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="v-pills-sent" role="tabpanel" aria-labelledby="v-pills-sent-tab" tabindex="0">
-                                    <div class="content-container">
-                                        <h3 class="form-title">Sent mails</h3>
-                                        <hr>
-                
-                                        <table id="sampleTable" class="table hover-table" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>S No.</th>
-                                                    <th>Mail Subject</th>
-                                                    <th>Mailing Groups</th>
-                                                    <th>Mail Status</th>
-                                                    <th>Composed Date</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    {% for notification in notifications %}
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>{{ notification.subject }}</td>
-                                                    <td>{% for group in notification.groups.all %}
-                                                        {{ group.name }} {% endfor %}</td>
-                                                     <td>{% if notification.status == True %}<div class="verified">Sent</div>{% else %}<div class="rejected"> Draft</div> {%endif%}</td>
-                                                    <td>{{ notification.created_at }}</td>
-                                                    <td>
-                                                        <div class="d-flex kit-action-com">
-                                                                <div class="action-btn-pen">
-                                                                    <a href="{% url 'notification:edit_notification' id=notification.id %}"><span class="material-symbols-outlined">
-                                                                        edit
-                                                                        </span>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="action-btn-view">
-                                                                    <a href="{% url 'notification:view_notification' id=notification.id %}">
-                                                                        <span class="material-symbols-outlined">visibility</span>
-                                                                    </a>
-                                                                </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="v-pills-draft" role="tabpanel" aria-labelledby="v-pills-draft-tab" tabindex="0">
-                                    <div class="content-container">
-                                        <h3 class="form-title">Draft mails</h3>
-                                        <hr>
-                
-                                        <table id="sampleTable" class="table hover-table" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>S No.</th>
-                                                    <th>Mail Subject</th>
-                                                    <th>Mailing Groups</th>
-                                                    <th>Mail Status</th>
-                                                    <th>Composed Date</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for notification in notifications %}
-                                                <tr>
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>{{ notification.subject }}</td>
-                                                    <td>{% for group in notification.groups.all %}
-                                                        {{ group.name }}{% endfor %}</td>
-                                                        <td>{% if notification.status == True %}<div class="verified">Sent</div>{% else %}<div class="rejected"> Draft</div> {%endif%}</td>
-                                                    <td>{{ notofication.created_at }}</td>
-                                                    <td>
-                                                        <div class="d-flex kit-action-com">
-                                                                <div class="action-btn-pen">
-                                                                    <a href="{% url 'notification:edit_notification' id=notification.id %}"><span class="material-symbols-outlined">
-                                                                        edit
-                                                                        </span>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="action-btn-view">
-                                                                    <a href="{% url 'notification:view_notification' id=notification.id %}" target="_blank">
-                                                                        <span class="material-symbols-outlined">visibility</span>
-                                                                    </a>
-                                                                </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            
-
-                        </div>
-                    </div>
-
-                    
-                
-
-                    
-                    
-
-                    
-
-
-
                 </div>
-                
             </div>
- {% endblock %}
+            <div class="col-md-10">
+                <div class="row mb-4 filter-row filters">
+                    <div class="col-md-3">
+                        <select id="payment" class="form-select form-control">
+                            <option value="all" selected>Mail Status</option>
+                            <option value="Sent">Sent</option>
+                            <option value="Draft">Draft</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" id="min" class="form-control" placeholder="Requested from">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" id="max" class="form-control" placeholder="Requested from">
+                    </div>
+                    <div class="col-md-3">
+                        <button id="reset" class="submit-btn btn w-100">Reset</button>
+                    </div>
+                </div>
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab" tabindex="0">
+                        <div class="content-container">
+                            <h3 class="form-title">All mails</h3>
+                            <hr>
+                            <table id="sampleTable" class="table hover-table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Mail Subject</th>
+                                        <th>Mailing Groups</th>
+                                        <th>Mail Status</th>
+                                        <th>Composed Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for notification in notifications %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ notification.subject }}</td>
+                                        <td>{% for group in notification.groups.all %}
+                                            {{ group.name }}
+                                            {% endfor %}
+                                        </td>
+                                        <td><div class="verified">{% if notification.status == True %}Sent{% else %}Draft{% endif %}</div></td>
+                                        <td>{{ notification.created_at }}</td>
+                                        <td>
+                                            <div class="d-flex kit-action-com">
+                                                <div class="action-btn-pen">
+                                                    <a href="{% url 'notification:edit_notification' id=notification.id %}"><span class="material-symbols-outlined">
+                                                        edit
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="action-btn-view">
+                                                    <a href="{% url 'notification:view_notification' id=notification.id %}">
+                                                        <span class="material-symbols-outlined">visibility</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-sent" role="tabpanel" aria-labelledby="v-pills-sent-tab" tabindex="0">
+                        <div class="content-container">
+                            <h3 class="form-title">Sent mails</h3>
+                            <hr>
+                            <table id="sampleTableSent" class="table hover-table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Mail Subject</th>
+                                        <th>Mailing Groups</th>
+                                        <th>Mail Status</th>
+                                        <th>Composed Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for notification in notifications %}
+                                    {% if notification.status == True %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ notification.subject }}</td>
+                                        <td>{% for group in notification.groups.all %}
+                                            {{ group.name }} {% endfor %}
+                                        </td>
+                                        <td><div class="verified">Sent</div></td>
+                                        <td>{{ notification.created_at }}</td>
+                                        <td>
+                                            <div class="d-flex kit-action-com">
+                                                <div class="action-btn-pen">
+                                                    <a href="{% url 'notification:edit_notification' id=notification.id %}"><span class="material-symbols-outlined">
+                                                        edit
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="action-btn-view">
+                                                    <a href="{% url 'notification:view_notification' id=notification.id %}">
+                                                        <span class="material-symbols-outlined">visibility</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-draft" role="tabpanel" aria-labelledby="v-pills-draft-tab" tabindex="0">
+                        <div class="content-container">
+                            <h3 class="form-title">Draft mails</h3>
+                            <hr>
+                            <table id="sampleTableDraft" class="table hover-table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Mail Subject</th>
+                                        <th>Mailing Groups</th>
+                                        <th>Mail Status</th>
+                                        <th>Composed Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for notification in notifications %}
+                                    {% if notification.status == False %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ notification.subject }}</td>
+                                        <td>{% for group in notification.groups.all %}
+                                            {{ group.name }}{% endfor %}
+                                        </td>
+                                        <td><div class="verified">Draft</div></td>
+                                        <td>{{ notification.created_at }}</td>
+                                        <td>
+                                            <div class="d-flex kit-action-com">
+                                                <div class="action-btn-pen">
+                                                    <a href="{% url 'notification:edit_notification' id=notification.id %}"><span class="material-symbols-outlined">
+                                                        edit
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="action-btn-view">
+                                                    <a href="{% url 'notification:view_notification' id=notification.id %}" target="_blank">
+                                                        <span class="material-symbols-outlined">visibility</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -218,7 +200,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>   
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
 <script>
 
     var minDate, maxDate;
@@ -298,12 +280,108 @@
         ]
         });
 
+        var tableSent = $('#sampleTableSent').DataTable({
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, 'All']
+            ],
+            dom: 'Bfrtipl',
+            language: {
+                info: '',
+                lengthMenu: 'Show _MENU_ entries',
+            },
+            buttons: [{
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                }
+            ],
+            columnDefs: [
+            {
+                targets: -1,
+                visible: true,
+            }
+        ]
+        });
+
+        var tableDraft = $('#sampleTableDraft').DataTable({
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, 'All']
+            ],
+            dom: 'Bfrtipl',
+            language: {
+                info: '',
+                lengthMenu: 'Show _MENU_ entries',
+            },
+            buttons: [{
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                }
+            ],
+            columnDefs: [
+            {
+                targets: -1,
+                visible: true,
+            }
+        ]
+        });
 
         $('#payment').on('change', function() {
             var type = $(this).val();
             table.columns(3).search(type).draw();
         });
-        
 
         $('#reset').on('click', function() {
             $('#min').val('');

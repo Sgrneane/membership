@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-ge=kxur@!x5s07ptg$j)q59@q@qar5530n5^p6n2t^&o3i9t^s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://membership.ngeotechs.org/','membership.ngeotechs.org','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['https://membership.ngeotechs.org/','membership.ngeotechs.org','127.0.0.1','localhost','192.168.1.94']
 
 
 # Application definition
@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "management",
     'events',
     'notification',
-    'whitenoise.runserver_nostatic', # new
 ]
 
 MIDDLEWARE = [
@@ -83,11 +82,26 @@ WSGI_APPLICATION = "membership.wsgi.application"
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'new_membership',
+#         'NAME': 'new_membership', #lims_new
 #         'USER': 'root',
 #         'PASSWORD':'',
 #         'HOST':'localhost',
 #         'PORT': '3308',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             'charset': 'utf8mb4',
+#         }
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'kantggjb_membershipdb', #lims_new
+#         'USER': 'kantggjb_membershipuser',
+#         'PASSWORD':'b2jXog&4--R?',
+#         'HOST':'localhost',
+#         'PORT': '3306',#3308
 #         'OPTIONS': {
 #             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 #             'charset': 'utf8mb4',
@@ -110,6 +124,13 @@ DATABASES = {
     }
 }
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',  # BASE_DIR is usually defined at the top of settings.py
+#     }
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [

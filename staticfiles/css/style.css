@@ -1024,9 +1024,12 @@ ul.chart-list li{
   width: 100%;
   height: auto;
 }
-
+.main-card{
+  display: flex;
+  justify-content: center;
+}
 .member-card {
-  /* width: 480px; */
+  width: 480px;
   justify-content: flex-start;
   background: #fff;
   display: flex;
@@ -1358,3 +1361,65 @@ ul.chart-list li{
   border-radius: 100vh;
   padding: 10px 14px;
 }
+
+
+.hamburger{
+  background: #e6edfb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 8px;
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .mbl-hide{
+    display: none;
+  }
+  .hamburger{
+    display: flex;
+  }
+  .form-container{
+    width: 100vw;
+    margin: 0 20px;
+  }
+  .form-container .form-info{
+    display: none;
+  }
+  .form-container .form .back-link{
+    margin-left: 0!important;
+  }
+  .form-container .form form{
+    padding: 20px;
+  }
+  .profile-nav{
+    border-right: none;
+    padding-top: 0;
+  }
+  .profile-navigation{
+    margin-top: 20px;
+  }
+  .multilevel-form{
+    width: 100%;
+  }
+  .db-data-container{
+    margin-top: 20px;
+  }
+  .userdb-mbl{
+    flex-direction: column-reverse;
+    padding: 10px;
+  }
+  .userdb-mbl-padding{
+    padding: 0px;
+  }
+  .option-btns .submit-btn{
+    padding: 5px;
+  }
+  .main-card{
+    overflow: scroll;
+  }
+  .member-card{
+    width: 480px;
+  }
+} 

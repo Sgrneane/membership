@@ -1,5 +1,5 @@
 from django import forms
-from .models import GeneralMembership,InstitutionalMembership,EducationalDocuments, Payment,FAQ
+from .models import GeneralMembership,InstitutionalMembership,EducationalDocuments, Payment,FAQ,Membership
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from . import choices
@@ -159,8 +159,13 @@ class EditInstitutionalDocuments(forms.Form):
     logo = forms.ImageField(required=False)
     pan_document = forms.FileField(required=False)
     registration_document = forms.FileField(required=False)
+
 class VerificationForm(forms.Form):
     membership_since = forms.CharField(max_length=4)
+    membership_no = forms.CharField()
+    
+    
+    
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment

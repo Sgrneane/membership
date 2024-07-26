@@ -35,7 +35,7 @@ from django.forms import modelformset_factory
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'date', 'duration', 'type', 'veneu', 'url_location', 'description', 'guest_description', 'pricing_type', 'banner', 'groups']
+        fields = ['name', 'date', 'duration', 'type', 'veneu', 'url_location', 'description', 'guest_description', 'pricing_type','status' ,'ticket_pricing_description','banner', 'groups']
 
 
 class TicketTypeForm(forms.ModelForm):

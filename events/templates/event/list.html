@@ -29,6 +29,10 @@
                         <th scope="col">Full Name</th>
                         <th scope="col">Email Address</th>
                         <th scope="col">Phone Number</th>
+                        <th scope="col">Ticket Type</th>
+                        <th scope="col">Amount Paid</th>
+                        <th scope="col">Payment Screenshot</th>
+                      
                       </tr>
                     </thead>
                     <tbody>
@@ -38,6 +42,21 @@
                         <td>{{ participation.user.full_name }}</td>
                         <td>{{ participation.user.email }}</td>
                         <td>{{ participation.phone_number }}</td>
+                        <td>{{ participation.ticket_type.name }}</td>
+                        <td>{{ participation.amount_paid }}</td>
+                        <td>
+                            {% if participation.payment_screenshot %}
+                                <a href="{{ participation.payment_screenshot.url }}" style="
+                                padding: 5px 8px;
+                                border-radius: 8px;
+                                background: #2549e4;
+                                color: #fff;
+                                font-size: 14px;
+                            ">View Screenshot</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
                       </tr>
                     {% endfor %}
                       
@@ -55,6 +74,10 @@
                         <th scope="col">Full Name</th>
                         <th scope="col">Email Address</th>
                         <th scope="col">Phone Number</th>
+                        <th scope="col">Ticket Type</th>
+                        <th scope="col">Amount Paid</th>
+                        <th scope="col">Payment Screenshot</th>
+                      
                       </tr>
                     </thead>
                     <tbody>
@@ -64,6 +87,21 @@
                         <td>{{ participation.name }}</td>
                         <td>{{ participation.email }}</td>
                         <td>{{ participation.phone_number }}</td>
+                        <td>{{ participation.ticket_type.name }}</td>
+                        <td>{{ participation.amount_paid }}</td>
+                        <td>
+                            {% if participation.payment_screenshot %}
+                            <a href="{{ participation.payment_screenshot.url }}" style="
+                            padding: 5px 8px;
+                            border-radius: 8px;
+                            background: #2549e4;
+                            color: #fff;
+                            font-size: 14px;
+                        ">View Screenshot</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
                       </tr>
                     {% endfor %}
                       

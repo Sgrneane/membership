@@ -101,8 +101,8 @@
                 {% endif %} 
 
 
-                <div class="row mt-4">
-                    <div class="col-md-7">
+                <div class="row mt-4 userdb-mbl">
+                    <div class="col-md-7 userdb-mbl-padding">
                     
                         <div class="db-data-container">
                             <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
@@ -190,7 +190,10 @@
                                                 {% endif %}
                                             </div>
                                             <div class="end-second">
+                                                {% if membership.verification == True %}
                                                 <img src="{% static 'images/signature.png' %}" alt="">
+                                                {% endif %}
+                                                
                                                 <p>Authorized Signature</p>
                                                 <p>Issued Date: {{ membership.verified_date|date:"Y-m-d" }}</p>
                                             </div>

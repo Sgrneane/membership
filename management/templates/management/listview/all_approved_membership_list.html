@@ -14,8 +14,6 @@
                         </a>
                     </div>
 
-
-
                     <div class="row mb-4 filter-row filters mt-4">
                         <div class="col-md-3">
                             <select id="payment" class="form-select form-control">
@@ -70,6 +68,7 @@
                             <thead>
                                 <tr>
                                     <th>S No.</th>
+                                    <th>Membership Number</th>
                                     <th>Applicant Name</th>
                                     <th>Citizenship or Passport Number</th>
                                     <th>Payment Status</th>
@@ -83,6 +82,7 @@
                                 {% for member in members %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
+                                    <td>{{ member.membership_number }}</td>
                                     <td>{% if member.company_name %}{{ member.company_name }}
                                         {% else %}
                                         {{ member.name_of_applicant }}
@@ -123,6 +123,13 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <!-- <h3 class="form-title mt-5">User Activity Logs</h3>
+                        <hr>
+                        <ul>
+                            {% for log in logs %}
+                            <li>{{ log.timestamp }} - {{ log.user.email }} - {{ log.action }}</li>
+                            {% endfor %}
+                        </ul> -->
                     </div>
 
                 </div>

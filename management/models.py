@@ -4,8 +4,18 @@ from django.utils import timezone
 from datetime import timedelta
 from model_utils.managers import InheritanceManager
 from .import choices
+from django.core.exceptions import ValidationError
+
 
 # Create your models here.
+
+class ActionLog(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    action = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.action} - {self.timestamp}"
 
 class PersonalInfo(models.Model):
     name_of_applicant = models.CharField(max_length=200)
@@ -35,8 +45,6 @@ class EducationalDocuments(models.Model):
     work_experience = models.TextField()
     educational_document = models.FileField(upload_to="educational_document",null=True)
 
-
-
 class Membership(models.Model):
     membership_number=models.CharField(max_length=10,unique=True,null=True)
     associated_user = models.OneToOneField(CustomUser,related_name='membership',on_delete=models.CASCADE,null=True)
@@ -62,9 +70,9 @@ class Membership(models.Model):
         elif not self.expiry_date:
             self.expiry_date = self.created_at + timedelta(days=365)
 
-        if not self.membership_number:
-            membership_count = Membership.objects.count() + 1
-            self.membership_number = f'NGS{membership_count:03}'
+        # if not self.membership_number:
+        #     membership_count = Membership.objects.count() + 1
+        #     self.membership_number = f'NGS{membership_count:03}'
 
         super(Membership, self).save(*args, **kwargs)
     
@@ -74,7 +82,7 @@ class Membership(models.Model):
 #Gemeral Memberships
 class GeneralMembership(Membership,PersonalInfo):
     #Educational Information
-    nationaldocument =models.OneToOneField(NationalDocumment,on_delete=models.CASCADE, related_name="associated_membership",null=True)
+    nationaldocument =models.OneToOneField(NationalDocumment,on_delete=models.CASCADE, related_name="associated_membership",related_query_name="associated_membership",null=True)
     educational_information = models.OneToOneField(EducationalDocuments,on_delete=models.CASCADE,related_name="edu_members",null=True)
     upgrade_request = models.BooleanField(null=True)
     upgrade_membership_type = models.PositiveIntegerField(choices=choices.MEMBERSHIP_TYPES,null=True)
@@ -86,8 +94,6 @@ class GeneralMembership(Membership,PersonalInfo):
     def email(self):
         return self.associated_user.email
     
-
-
 class InstitutionalMembership(Membership):
     company_name = models.CharField(max_length=200)
     company_address = models.CharField(max_length=200)
@@ -101,6 +107,7 @@ class InstitutionalMembership(Membership):
     logo = models.ImageField(upload_to="institutional_documents",null=True)
     def __str__(self):
         return self.company_name
+  
     
 class Payment(models.Model):
     """To hold payment record of users."""
@@ -115,8 +122,8 @@ class Payment(models.Model):
     txn_id = models.CharField(max_length=250, blank=True, null=True)
     paypal_payer_id = models.CharField(max_length=250, blank=True, null=True)
 
-    def __str__(self):
-        return self.paid_payment.first_name
+    # def __str__(self):
+    #     return self.paid_payment.first_name
 
     @property
     def amount_in_rs(self):

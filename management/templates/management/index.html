@@ -43,13 +43,31 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'events:index_all_events'%}">Events</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link auth-btn" href="{% url 'account:login_user' %}">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link auth-btn" href="{% url 'account:signup' %}">Register</a>
-              </li>
             </ul>
+            {% if user.is_authenticated %}
+                <div class="user-img-nav">
+                    <a href="{% url 'account:login_user' %}">
+                        {% if request.user.role == 1 %}
+                            <img src="https://ui-avatars.com/api/?name={{ request.user.full_name }}&rounded=true&background=FB802C&color=ffffff&size=28&bold=true">
+                        {% else %}
+                            {% if request.user.membership %}
+                                <img src="{{ membership.pp_photo.url }}" alt="">
+                            {% else %}
+                                <img src="https://ui-avatars.com/api/?name={{ request.user.full_name }}&rounded=true&background=FB802C&color=ffffff&size=28&bold=true">
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </div>
+            {% else %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link auth-btn" href="{% url 'account:login_user' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link auth-btn" href="{% url 'account:signup' %}">Register</a>
+                    </li>
+                </ul>
+            {% endif %}
           </div>
         </div>
     </nav>
@@ -65,7 +83,8 @@
                 </div>
                 <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="{% static 'images/banner1.png' %}" class="d-block w-100" alt="...">
+                  <img src="/static/images/membership_process.jpg" class="d-block w-100" alt="..." style="
+                  object-fit: contain;">
                     <div class="story-overlay"></div>
                 </div>
                 {% comment %} <div class="carousel-item">
@@ -118,7 +137,7 @@
     <div class="container my-5">
       <div class="title-container">
         <h1 class="section-title">Events</h1>
-        <a href="./events.html"><i class="fa-solid fa-circle-arrow-right"></i></a>
+        <a href="{% url 'events:index_all_events' %}"><i class="fa-solid fa-circle-arrow-right"></i></a>
       </div>
       <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
         {% for event in events %}

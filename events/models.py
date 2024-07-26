@@ -14,7 +14,7 @@ class Event(models.Model):
     url_location = models.CharField(max_length = 2000,null=True)
     description = models.CharField(max_length = 2000,default = '')
     guest_description = models.CharField(max_length = 2000,default = '')
-    # ticket_pricing_description = models.CharField(max_length = 2000,default = '')
+    ticket_pricing_description = models.CharField(max_length = 2000,default = 'event info')
     banner = models.ImageField(upload_to='event/banner',null = True)
     created_date = models.DateTimeField(auto_now_add = True)
 
@@ -30,11 +30,7 @@ class Event(models.Model):
     pricing_type = models.CharField(max_length=10, choices=PRICING_CHOICES, default=FREE)
     pricing_description = models.CharField(max_length=2000, default='', blank=True, null=True)
 
-    # # Dynamic pricing for paid events
-    # pricing_normal = models.DecimalField(max_digits=10, decimal_places=2, blank=True,null=True)
-    # pricing_vip = models.DecimalField(max_digits=10, decimal_places=2, blank=True,null=True)
-    # pricing_vvip = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null= True)
-
+    
 
 
     def is_free_event(self):
@@ -55,7 +51,9 @@ class TicketType(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=2000, default='', blank=True)
     limit = models.PositiveIntegerField(default=0)  # 0 for unlimited
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    # price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.CharField(max_length=100)
+
 
     def __str__(self):
         return f"{self.event.name} - {self.name}"

@@ -39,14 +39,32 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <label class="form-label cm">Select contacts <span class="required-text">*</span></label>
-                                        <select class="contact-list js-states form-control cm" name="users" multiple="multiple">
+                                        <!-- Add Select All checkbox -->
+                                        <div>
+                                            <input type="checkbox" id="select-all-checkbox"> Select All
+                                        </div>
+                                        <select id="contact-list" class="contact-list js-states form-control cm" name="users" multiple="multiple">
                                             {% for user in all_users %}
                                             <option value="{{ user.id }}" {% if form.instance and user in form.instance.users.all %}selected{% endif %}>{{ user.email }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
-
+                                
+                                <script>
+                                    document.getElementById('select-all-checkbox').addEventListener('change', function() {
+                                        var selectAllChecked = this.checked;
+                                        var select = document.getElementById('contact-list');
+                                        for (var i = 0; i < select.options.length; i++) {
+                                            select.options[i].selected = selectAllChecked;
+                                        }
+                                        // Trigger an input event on the select element to update the UI
+                                        var event = new Event('input', { bubbles: true });
+                                        select.dispatchEvent(event);
+                                    });
+                                </script>
+                                
+                                
                                 <div class="button-container mt-2 d-flex justify-content-end">
                                     <button type="submit" class="submit-btn btn" onclick="nextStep(this)">
                                         {% if form.group %}Update{% else %}Create Group{% endif %}</button>

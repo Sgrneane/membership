@@ -1,5 +1,5 @@
 {% load static %}
-<div class="col-md-3 my-profile-w-20 g-0">
+<div class="col-md-3 my-profile-w-20 mbl-hide g-0">
     <div class="sticky-content">
         <div class="profile-nav">
             <div class="profile-image">
@@ -125,21 +125,21 @@
                         </a>
                     </li>
 
-                    <div class="accordion accordion-flush" id="mailGroup">
+                    <div class="accordion accordion-flush" id="eventGroup">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <li class="acc-li">
                                     <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#mail-group"
-                                        aria-expanded="false" aria-controls="mail-group">
+                                        data-bs-toggle="collapse" data-bs-target="#event-group"
+                                        aria-expanded="false" aria-controls="event-group">
                                         <a href><span class="material-symbols-outlined me-2">
                                         event
                                         </span>Event</a>
                                     </button>
                                 </li>
                             </h2>
-                            <div id="mail-group" class="accordion-collapse collapse"
-                                data-bs-parent="#mailGroup">
+                            <div id="event-group" class="accordion-collapse collapse"
+                                data-bs-parent="#eventGroup">
                                 <ul>
                                     <li><a href="{% url 'events:all_events' %}">All Event</a></li>
                                     <li><a href="{% url 'events:eventadd'%}">Create Event</a></li>
@@ -182,6 +182,202 @@
                             </span>Logout</a>
                     </li>
                  </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <div class="profile-image">
+            <a href="{% url 'management:user_dashboard' %}">
+                <img src="{% static 'images/fulllogo.jpg' %}" alt>
+            </a>
+        </div>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="col-md-3 my-profile-w-20 g-0">
+        <div class="sticky-content">
+            <div class="profile-nav">
+                
+    
+                <div class="profile-navigation">
+                    <ul>
+                        {% url 'management:user_dashboard' as user_dashboard_url %}
+                        <li {% if request.path == user_dashboard_url %} class="active" {% endif %}><a href={% url 'management:user_dashboard' %}><span class="material-symbols-rounded me-2">
+                                    grid_view
+                                </span>Dashboard</a>
+                        </li>
+                    {% if request.user.role == 2%}
+                        {% if request.user.membership %}
+                        {% url 'management:new_membership' as new_membership_url%}
+                        <li {% if request.path == new_membership_url %} class="active" {% endif %}>
+                            <a href={% url 'management:view_membership' id=request.user.membership.id %}><span class="material-symbols-rounded me-2">
+                                    add_card
+                                </span>Membership Details
+                            </a>
+                        </li>
+                        {% else %}
+                        {% url 'management:new_membership' as new_membership_url%}
+                        <li {% if request.path == new_membership_url %} class="active" {% endif %}>
+                            <a href={% url 'management:new_membership' %}><span class="material-symbols-rounded me-2">
+                                    add_card
+                                </span>New Membership
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if request.user.role == 2 and request.user.membership %}
+                        {% url 'management:payment' as payment_url%}
+                        <li {% if request.path == payment_url %} class="active" {% endif %}>
+                            <a href={% url 'management:payment' %}><span class="material-symbols-rounded me-2">
+                                    add_card
+                                </span>Payment
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if request.user.role == 1 %}
+    
+                        <div class="accordion accordion-flush" id="memberRequest">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <li class="acc-li">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#member-request"
+                                            aria-expanded="false" aria-controls="member-request">
+                                            <a href><span class="material-symbols-rounded me-2">
+                                                    group_add
+                                                </span>Membership Request</a>
+                                        </button>
+                                    </li>
+                                </h2>
+                                <div id="member-request" class="accordion-collapse collapse"
+                                    data-bs-parent="#memberRequest">
+                                    <ul>
+                                        <li><a href="{% url 'management:view_general_membership_list' %}">General Member</a></li>
+                                        <li><a href="{% url 'management:view_lifetime_membership_list' %}">Lifetime Member</a></li>
+                                        <li><a href="{% url 'management:view_student_membership_list' %}">Student Member</a></li>
+                                        <li><a href="{% url 'management:view_institutional_membership_list' %}">Institutional Member</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="accordion accordion-flush" id="approvedMember">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <li class="acc-li">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#approved-member"
+                                            aria-expanded="false" aria-controls="approved-member">
+                                            <a href><span class="material-symbols-rounded me-2">
+                                                    fact_check
+                                                </span>Approved Members</a>
+                                        </button>
+                                    </li>
+                                </h2>
+                                <div id="approved-member" class="accordion-collapse collapse"
+                                    data-bs-parent="#approvedMember">
+                                    <ul>
+                                        <li><a href="{% url 'management:all_approved_membership_list'%}">All</a></li>
+                                        <li><a href="{% url 'management:general_approved_membership_list'%}">General Member</a></li>
+                                        <li><a href="{% url 'management:lifetime_approved_membership_list'%}">Lifetime Member</a></li>
+                                        <li><a href="{% url 'management:student_approved_membership_list'%}">Student Member</a></li>
+                                        <li><a href="{% url 'management:institutional_approved_membership_list'%}">Institutional Member</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion accordion-flush" id="upgradeRequest">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <li class="acc-li">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#upgrade-request"
+                                            aria-expanded="false" aria-controls="member-request">
+                                            <a href><span class="material-symbols-rounded me-2">
+                                                    group_add
+                                                </span>Upgrade Request</a>
+                                        </button>
+                                    </li>
+                                </h2>
+                                <div id="upgrade-request" class="accordion-collapse collapse"
+                                    data-bs-parent="#upgradeRequest">
+                                    <ul>
+                                        <li><a href="{% url 'management:upgrade_general_membership_list' %}">General Member</a></li>
+                                        <li><a href="{% url 'management:upgrade_lifetime_membership_list' %}">Lifetime Member</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <li>
+                            <a href={% url 'management:rejected_membership_list' %}><span class="material-symbols-rounded me-2">
+                                    person_cancel
+                                </span>Rejected Membership
+                            </a>
+                        </li>
+    
+                        <div class="accordion accordion-flush" id="eventGroup">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <li class="acc-li">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#event-group"
+                                            aria-expanded="false" aria-controls="event-group">
+                                            <a href><span class="material-symbols-outlined me-2">
+                                            event
+                                            </span>Event</a>
+                                        </button>
+                                    </li>
+                                </h2>
+                                <div id="event-group" class="accordion-collapse collapse"
+                                    data-bs-parent="#eventGroup">
+                                    <ul>
+                                        <li><a href="{% url 'events:all_events' %}">All Event</a></li>
+                                        <li><a href="{% url 'events:eventadd'%}">Create Event</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion accordion-flush" id="mailGroup">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <li class="acc-li">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#mail-group"
+                                            aria-expanded="false" aria-controls="mail-group">
+                                            <a href><span class="material-symbols-outlined me-2">
+                                            notifications_active
+                                            </span>Notification</a>
+                                        </button>
+                                    </li>
+                                </h2>
+                                <div id="mail-group" class="accordion-collapse collapse"
+                                    data-bs-parent="#mailGroup">
+                                    <ul>
+                                        <li><a href="{% url 'notification:all_groups' %}">All Groups</a></li>
+                                        <li><a href="{% url 'notification:create_group' %}">Create Group</a></li>
+                                        <li><a href="{% url 'notification:all_notifications' %}">All Notifications</a></li>
+                                        <li><a href="{% url 'notification:create_notification' %}">Create Notification</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <li><a href="{% url 'management:all_faqs'%}"><span class="material-symbols-rounded me-2">
+                            group
+                            </span>FAQs</a></li>
+                        {% endif %}
+                        <li><a href={% url 'account:logout_user' %}><span class="material-symbols-rounded me-2">
+                            <span class="material-symbols-rounded">
+                                power_settings_new
+                                </span>
+                                </span>Logout</a>
+                        </li>
+                     </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -26,6 +26,7 @@ def is_admin(view_func):
         else:
             return redirect('account:login')
     return wrapper
+
 def is_employee(view_func):
     def wrapper(request, *args, **kwargs):
         if request.user.role == 2 or request.user.role == 1:

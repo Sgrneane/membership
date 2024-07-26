@@ -87,36 +87,63 @@
                             </select>
                         </div>
                     </div>
+                    <!-- Event form fields -->
+                                
                     <div class="row mb-3" id="ticket_pricing_fields">
                         <div class="col-md-12">
+                            
+                            <h4 class="form-label mt-5">Ticket Types</h4>
                             <hr>
-                            <h4>Ticket Types</h4>
                             <div id="ticket_types">
-                                <div class="ticket-type">
-                                    <div class="row mb-3">
-                                        <div class="col-md-4">
-                                            <label class="form-label cm">Ticket Type Name</label>
-                                            <input type="text" class="form-control cm" name="ticket_type_name[]" placeholder="Enter ticket type name">
+                                {% if ticket_types %}
+                                    {% for ticket_type in ticket_types %}
+                                        <div class="ticket-type">
+                                            <div class="row mb-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label cm">Ticket Type Name</label>
+                                                    <input type="text" class="form-control cm" name="ticket_type_name[]" value="{{ ticket_type.name }}" placeholder="Enter ticket type name">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label cm">Ticket Type Description</label>
+                                                    <input type="text" class="form-control cm" name="ticket_type_description[]" value="{{ ticket_type.description }}" placeholder="Enter ticket type description">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label cm">Limit</label>
+                                                    <input type="number" class="form-control cm" name="ticket_type_limit[]" value="{{ ticket_type.limit }}" placeholder="Enter ticket type limit">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label cm">Price</label>
+                                                    <input type="text" class="form-control cm" name="ticket_type_price[]" value="{{ ticket_type.price }}" placeholder="Enter ticket type price" step="0.01">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label cm">Ticket Type Description</label>
-                                            <input type="text" class="form-control cm" name="ticket_type_description[]" placeholder="Enter ticket type description">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label cm">Limit</label>
-                                            <input type="number" class="form-control cm" name="ticket_type_limit[]" placeholder="Enter ticket type limit">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label cm">Price</label>
-                                            <input type="number" class="form-control cm" name="ticket_type_price[]" placeholder="Enter ticket type price" step="0.01">
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="ticket-type">
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label cm">Ticket Type Name</label>
+                                                <input type="text" class="form-control cm" name="ticket_type_name[]" placeholder="Enter ticket type name">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label cm">Ticket Type Description</label>
+                                                <input type="text" class="form-control cm" name="ticket_type_description[]" placeholder="Enter ticket type description">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label cm">Limit</label>
+                                                <input type="number" class="form-control cm" name="ticket_type_limit[]" placeholder="Enter ticket type limit">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label cm">Price</label>
+                                                <input type="text" class="form-control cm" name="ticket_type_price[]" placeholder="Enter ticket type price" step="0.01">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             </div>
-                            <button type="button" class="btn btn-primary" id="add_ticket_type">Add Ticket Type</button>
+                            <button type="button" class="btn submit-btn" id="add_ticket_type">Add ticket type</button>
                         </div>
                     </div>
-                    
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <label class="form-label cm">Tickets or pricing description (if any)</label>
@@ -131,6 +158,14 @@
                         </div>
                     </div>
 
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label cm">Event Status:</label>
+                            <input type="checkbox" class="form-check-input" id="isActiveCheckbox" name="status" {% if event.status %}checked{% endif %}>
+                            <label class="form-check-label" for="isActiveCheckbox">Active</label>
+                        </div>
+                    </div>
+                    
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <label class="form-label cm">Notify groups <span class="required-text">*</span></label>
@@ -206,7 +241,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label cm">Price</label>
-                    <input type="number" class="form-control cm" name="ticket_type_price[]" placeholder="Enter ticket type price" step="0.01">
+                    <input type="text" class="form-control cm" name="ticket_type_price[]" placeholder="Enter ticket type price" step="0.01">
                 </div>
             </div>`;
         ticketTypesContainer.appendChild(ticketType);

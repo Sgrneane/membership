@@ -45,6 +45,7 @@
                                 <tr>
                                     <th>S No.</th>
                                     <th>Applicant Name</th>
+                                    <th>Membership Number</th>
                                     <th>Citizenship or Passport Number</th>
                                     <th>Payment Status</th>
                                     <th>Requested Date</th>
@@ -57,6 +58,7 @@
                                 {% for member in members %}
                                 <tr>
                                         <td>{{ forloop.counter }}</td>
+                                        <td>{{ member.membership_number }}</td>
                                         <td>{{ member.name_of_applicant }}</td>
                                         <td>{{ member.nationaldocument.identity_card_no }}</td>
                                         <td>

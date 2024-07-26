@@ -35,25 +35,25 @@
                                 <h3 class="form-title">Personal Information</h3>
                                 <hr>
             
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <label class="form-label cm">Salutation <span class="required-text">*</span></label>
-                                        <select class="form-select form-control" aria-label="Default select example" name='salutation' required>
-                                            <option selected disabled>Select Salutation</option>
-                                            {% for k, v in salutation %}
-                                            <option value="{{ k }}"{% if k == membership.salutation %}selected{% endif %}>{{ v }}</option>
-                                            {% endfor %}
-                                        </select>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label cm">Salutation <span class="required-text">*</span></label>
+                                            <select class="form-select form-control" aria-label="Default select example" name='salutation' required>
+                                                <option selected disabled>Select Salutation</option>
+                                                {% for k, v in salutation %}
+                                                <option value="{{ k }}"{% if k == membership.salutation %}selected{% endif %}>{{ v }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label cm">Name of applicant <span class="required-text">*</span></label>
+                                            <input type="text" class="form-control cm" placeholder="Enter applicant name" name='name_of_applicant' value="{{ membership.name_of_applicant }}" style="font-weight:bold" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label cm">Phone Number<span class="required-text">*</span></label>
+                                            <input type="text" class="form-control cm" placeholder="Enter date of birth" name='phone_number' value={{ membership.phone_number }} required>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label cm">Name of applicant <span class="required-text">*</span></label>
-                                        <input type="text" class="form-control cm" placeholder="Enter applicant name" name='name_of_applicant' value="{{ membership.name_of_applicant }}" style="font-weight:bold" required>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label cm">Phone Number<span class="required-text">*</span></label>
-                                        <input type="text" class="form-control cm" placeholder="Enter date of birth" name='phone_number' value={{ membership.phone_number }} required>
-                                    </div>
-                                </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-4">
@@ -69,7 +69,11 @@
                                         <label class="form-label cm">Affiliation <span class="required-text">*</span></label>
                                         <input type="text" class="form-control cm" placeholder="Enter organization name" name='affiliation' value={{  membership.affiliation }} required>
                                     </div>
+
                                 </div>
+                            </div>
+
+
                                 <div class="row mb-3">
                                     <div class="col-md-8">
                                         <label class="form-label cm">Passport size photo of the applicant showing both ears <span class="required-text">*</span></label>
@@ -82,7 +86,6 @@
                             </div>
                         </form>
                         {% endblock %}
-                    </div>
 
                 </div>
                 

@@ -43,13 +43,32 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'events:index_all_events' %}">Events</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link auth-btn" href="{% url 'account:login_user' %}">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link auth-btn" href="{% url 'account:signup' %}">Register</a>
-              </li>
             </ul>
+            {% if user.is_authenticated %}
+            <div class="user-img-nav">
+                <a href="{% url 'account:login_user' %}">
+                    {% if request.user.role == 1 %}
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.full_name }}&rounded=true&background=FB802C&color=ffffff&size=28&bold=true">
+                    {% else %}
+                        {% if membership %}
+                            <img src="{{ membership.pp_photo.url }}" alt="">
+                        {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ request.user.full_name }}&rounded=true&background=FB802C&color=ffffff&size=28&bold=true">
+                        {% endif %}
+                    {% endif %}
+                </a>
+            </div>
+        {% else %}
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link auth-btn" href="{% url 'account:login_user' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link auth-btn" href="{% url 'account:signup' %}">Register</a>
+                </li>
+            </ul>
+        {% endif %}
+              
           </div>
         </div>
     </nav>
