@@ -59,14 +59,19 @@ urlpatterns = [
     path('lifetime-members',views.lifetime_members,name='lifetime_members'),
     path('general-members',views.general_members,name='general_members'),
     path('institutional-members',views.institutional_members,name='institutional_members'),
+    path('honorary-members', views.honorary_members, name='honorary_members'),
     #upgrade request table
-    path('upgrade-to-lifetime-members',views.lifetime_upgrade_request_list,name='upgrade_lifetime_membership_list'),
-    path('upgrade-to-general-members',views.general_upgrade_request_list,name='upgrade_general_membership_list'),
+    path('upgrade-to-lifetime-members_list',views.lifetime_upgrade_request_list,name='upgrade_lifetime_membership_list'),
+    path('upgrade-to-general-members_list',views.general_upgrade_request_list,name='upgrade_general_membership_list'),
     #upgrade Membership
     path('upgrade-to-general-members',views.upgrade_to_general_membership,name='upgrade_to_general_membership'),
     path('upgrade-to-lifetime-members',views.upgrade_to_lifetime_membership,name='upgrade_to_lifetime_membership'),
     path('verify-upgrade/<int:id>',views.verify_upgrade,name='verify_upgrade'),
 
+    #renew
+    path('renew-general-membership/', views.renew_general_membership, name='renew_general_membership'),
+    path('renew-general-membership-list',views.general_renew_request_list,name='general_renew_request_list'),
+    path('renew-verify/<int:id>',views.verify_renew,name='verify_renew'),
 
     ##Faqs
     path('all-faqs',views.all_faqs,name='all_faqs'),

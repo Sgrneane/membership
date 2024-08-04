@@ -20,7 +20,8 @@ from .forms import VerificationForm
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-
+from datetime import date
+from datetime import timedelta
 
 # Create your views here.
 # def index(request):
@@ -69,7 +70,10 @@ def membership_guidelines(request):
     return render(request, 'management/membership_guidelines.html', context)
 
 def general_members(request):
-    general_membership = GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True))
+    general_membership = GeneralMembership.objects.filter(
+        Q(membership_type=1) | Q(membership_type=3),
+        verification=True
+    )
     context ={
         'members': general_membership
     }
@@ -98,44 +102,63 @@ def student_members(request):
     }
     return render(request,'management/listview/homepage_lists/student_membership_list.html',context)
 
+def honorary_members(request):
+    # general_membership = GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True))
+    
+    return render(request,'management/listview/homepage_lists/honorary_members_list.html')
+
 
 @login_required
 def user_dashboard(request):
-    user= request.user
+    user = request.user
+    remaining_days = None
+    renew_upto = None
+    
     if user.role == 2: 
-        general_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True)).count()
-        student_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=True)).count()
-        lifetime_membership_count=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=True)).count()
-        institutional_membership_count=InstitutionalMembership.objects.filter(verification=True).count()
-        events = Event.objects.filter(status =True)
-        membership=None
+        general_membership_count = GeneralMembership.objects.filter(Q(membership_type=1), Q(verification=True)).count()
+        student_membership_count = GeneralMembership.objects.filter(Q(membership_type=1), Q(verification=True)).count()
+        lifetime_membership_count = GeneralMembership.objects.filter(Q(membership_type=3), Q(verification=True)).count()
+        institutional_membership_count = InstitutionalMembership.objects.filter(verification=True).count()
+        events = Event.objects.filter(status=True)
+        membership = None
+        
         try:
-            membership=user.membership
-            membership=Membership.objects.select_subclasses().filter(associated_user=user).first()
+            membership = user.membership
+            membership = Membership.objects.select_subclasses().filter(associated_user=user).first()
             print(membership.verification)
         except:
-            membership=None
-        context={
-            'general_membership_count':general_membership_count,
-            'student_membership_count':student_membership_count,
-            'institutional_membership_count':institutional_membership_count,
-            'lifetime_membership_count' :lifetime_membership_count,
-            'membership' : membership,
-            'events':events
+            membership = None
+
+        # Calculate remaining days until expiry
+        if membership and membership.expiry_date:
+            today = date.today()
+            remaining_days = (membership.expiry_date - today).days if membership.expiry_date else None
+            renew_upto = membership.expiry_date + timedelta(days=365)
+            
+        context = {
+            'general_membership_count': general_membership_count,
+            'student_membership_count': student_membership_count,
+            'institutional_membership_count': institutional_membership_count,
+            'lifetime_membership_count': lifetime_membership_count,
+            'membership': membership,
+            'events': events,
+            'remaining_days': remaining_days,
+            'renew_upto': renew_upto
         }
-        return render(request,'management/user_dashboard.html',context)
+        return render(request, 'management/user_dashboard.html', context)
+    
     if user.role == 1:
-        general_membership_count=GeneralMembership.objects.filter(Q(membership_type=1),Q(verification=False)).count()
-        student_membership_count=GeneralMembership.objects.filter(Q(membership_type=4),Q(verification=False)).count()
-        lifetime_membership_count=GeneralMembership.objects.filter(Q(membership_type=3),Q(verification=False)).count()
-        institutional_membership_count=InstitutionalMembership.objects.filter(verification=False).count()
-        context={
-            'general_membership_count':general_membership_count,
-            'student_membership_count':student_membership_count,
-            'institutional_membership_count':institutional_membership_count,
-            'lifetime_membership_count' :lifetime_membership_count,
+        general_membership_count = GeneralMembership.objects.filter(Q(membership_type=1), Q(verification=False)).count()
+        student_membership_count = GeneralMembership.objects.filter(Q(membership_type=4), Q(verification=False)).count()
+        lifetime_membership_count = GeneralMembership.objects.filter(Q(membership_type=3), Q(verification=False)).count()
+        institutional_membership_count = InstitutionalMembership.objects.filter(verification=False).count()
+        context = {
+            'general_membership_count': general_membership_count,
+            'student_membership_count': student_membership_count,
+            'institutional_membership_count': institutional_membership_count,
+            'lifetime_membership_count': lifetime_membership_count,
         }
-        return render(request,'management/admin_dashboard.html',context)
+        return render(request, 'management/admin_dashboard.html', context)
 
 #New membership form
 @is_user
@@ -716,7 +739,6 @@ def rejected_membership_list(request):
         'members' : rejected_members
     }  
     return render(request,'management/listview/all_approved_membership_list.html',context) 
-
 @login_required
 def payment(request):
     """Handles the payment for individual users."""
@@ -743,25 +765,41 @@ def payment(request):
     khalti_return_url = "http://127.0.0.1:8000/membership/payment-verification"
     if request.method == "POST":
         print('request')
-        form = forms.PaymentForm(request.POST, request.FILES)
-        if form.is_valid():
-            Payment.objects.create(
-                created_by=request.user,
-                 member=membership,
-                created_at=datetime.now(), **form.cleaned_data
-            )
+        action = request.POST.get('action')
+        print(action)
+        if action == "cancel":
             if membership.upgrade_request == True:
-                membership.upgrade_payment = True
+                membership.upgrade_request = False
+                membership.save()
+            elif membership.renew_request == True:
+                membership.renew_request = False
                 membership.save()
             else:
                 pass
-            return redirect('management:payment')# redirect to payment page
+            return redirect('management:user_dashboard')
         else:
-            messages.error(
-                request, "Process Failed!!. Submit Screenshot of your payment."
-            )
-            print("hh")
-            return redirect("management:payment") #same page
+            form = forms.PaymentForm(request.POST, request.FILES)
+            if form.is_valid():
+                Payment.objects.create(
+                    created_by=request.user,
+                    member=membership,
+                    created_at=datetime.now(), **form.cleaned_data
+                )
+                if membership.upgrade_request == True:
+                    membership.upgrade_payment = True
+                    membership.save()
+                elif membership.renew_request:
+                    membership.renew_payment = True
+                    membership.save()
+                else:
+                    pass
+                return redirect('management:payment')# redirect to payment page
+            else:
+                messages.error(
+                    request, "Process Failed!!. Submit Screenshot of your payment."
+                )
+                print("hh")
+                return redirect("management:payment") #same page
     else:
         form = forms.PaymentForm()
         
@@ -776,8 +814,9 @@ def payment(request):
     return render(request, "management/payment/payment.html", context)
 
 
+
 def general_upgrade_request_list(request):
-    general_upgrade_membership=GeneralMembership.objects.filter(Q(upgrade_request=True),Q(upgrade_membership_type=1))
+    general_upgrade_membership=GeneralMembership.objects.filter(Q(upgrade_request=True),Q(upgrade_membership_type=1) and Q(upgrade_payment=True))
     context={
         'members':general_upgrade_membership,
         'upgrade':2
@@ -785,7 +824,7 @@ def general_upgrade_request_list(request):
     return render(request,'management/listview/upgrade_list.html',context)
 
 def lifetime_upgrade_request_list(request):
-    general_upgrade_membership=GeneralMembership.objects.filter(Q(upgrade_request=True),Q(upgrade_membership_type=3))
+    general_upgrade_membership=GeneralMembership.objects.filter(Q(upgrade_request=True),Q(upgrade_membership_type=3) and Q(upgrade_payment=True))
     context={
         'members':general_upgrade_membership,
         'upgrade':1
@@ -793,6 +832,14 @@ def lifetime_upgrade_request_list(request):
     print('general_upgrade_membership')
     return render(request,'management/listview/upgrade_list.html',context)
 
+def general_renew_request_list(request):
+    general_renew_membership =GeneralMembership.objects.filter(Q(renew_request=True) and Q(renew_payment=True))
+    context ={
+        'members': general_renew_membership
+    }
+
+    print("renew request")
+    return render(request, 'management/listview/renew_list.html', context)
 
 def upgrade_to_general_membership(request):
     user=request.user
@@ -809,6 +856,25 @@ def upgrade_to_lifetime_membership(request):
     membership.upgrade_membership_type = 3
     membership.save()
     return redirect('management:payment')
+
+def renew_general_membership(request):
+    user = request.user
+    membership = get_object_or_404(GeneralMembership.objects.select_subclasses(), associated_user=user)
+    if not membership.renew_request:
+        membership.renew_request = True
+        membership.save()
+    return redirect('management:payment')
+
+
+
+def verify_renew(request, id):
+    membership = get_object_or_404(GeneralMembership.objects.select_subclasses(), id=id)
+    if membership.renew_request:
+        membership.expiry_date = membership.expiry_date + timedelta(days=365)
+        membership.renew_request = False
+        membership.renew_payment = False
+        membership.save()
+    return redirect('management:all_approved_membership_list')
 
 
 def verify_upgrade(request,id):

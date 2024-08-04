@@ -87,7 +87,7 @@
                         </div>
                 {% endif %}
 
-                {% if membership.membership_type != 2  or membership.membership_type != 3 %}
+                <!-- {% if membership.membership_type != 2  or membership.membership_type != 3 %}
                 {% if membership.verification == True  and upgrade_request == False %}
                     <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert"> 
                         <span class="material-symbols-outlined me-2">
@@ -98,8 +98,35 @@
                             </div>
                     </div>
                 {% endif %}
-                {% endif %} 
+                {% endif %}  -->
+                
 
+                {% if membership.membership_type != 2  and membership.membership_type != 3 %}
+                {% if membership.verification == True and membership.renew_request == False  %}
+                 {% if request.user.membership.membership_type == 1 %}
+                    <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert"> 
+                        <span class="material-symbols-outlined me-2">
+                            info
+                        </span>
+                            <div>
+                                Your current membership is {{ request.user.membership.get_membership_type_display }}.<strong><a href="{% url 'management:upgrade_to_lifetime_membership' %}"> Click here to upgrade </a> to lifetime membership. </strong>
+                            </div>
+                    </div>
+                 {% else %}
+                 <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert"> 
+                    <span class="material-symbols-outlined me-2">
+                        info
+                    </span>
+                        <div>
+                            Your current membership is {{ request.user.membership.get_membership_type_display }}.<strong><a href="{% url 'management:upgrade_to_lifetime_membership' %}"> Click here to upgrade </a> to lifetime membership.</strong> or <strong><a href="{% url 'management:upgrade_to_general_membership' %}"> Click here to upgrade </a> to General membership.</strong>
+                        </div>
+                </div>
+                    {% endif %}
+                {% endif %}
+                {% endif %}
+
+        
+            
 
                 <div class="row mt-4 userdb-mbl">
                     <div class="col-md-7 userdb-mbl-padding">
@@ -206,6 +233,21 @@
                                 <button onclick="saveAsImage('savecard')" class="btn submit-btn">Save Card</button>
                                 <a href="{% url 'management:view_membership' id=membership.id %}" class="btn submit-btn ms-2">Membership Details</a>
                             </div>
+
+
+                    <!-- renew request -->
+                    {% if membership.verification == True %}
+                    {% if remaining_days is not None %}
+                    <div class="row">
+                        <div class="col">
+                            <div class="alert alert-info" role="alert">
+                                Your membership will expire in {{ remaining_days }} days ({{ membership.expiry_date }}).
+                                <strong><a href="{% url 'management:renew_general_membership' %}">Click here to renew your membership up to {{ renew_upto }}</a></strong>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% endif %}
 {% else %}
     <div class="alert alert-primary d-flex align-items-center alert-dismissible fade show mt-4" role="alert">
         <span class="material-symbols-outlined me-2">

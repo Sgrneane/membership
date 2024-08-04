@@ -34,14 +34,15 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="https://ngeotechs.org/?page_id=1464" target="_blank">About</a>
-              </li>
+              
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'management:membership_guidelines' %}">Membership</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'events:index_all_events'%}">Events</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://ngeotechs.org/?page_id=1464" target="_blank">About NGS</a>
               </li>
             </ul>
             {% if user.is_authenticated %}
@@ -168,26 +169,30 @@
             </div>
             
             <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
+
+              <div class="col">
+                <a href="{% url 'management:honorary_members'%}">
+                  <div class="card h-100">
+                      <div class="card-body membership-card">
+                          <span class="material-symbols-outlined"> person</span>
+                          <h5 class="form-title">Honorary Members</h5>
+                      </div>
+                  </div>
+                </a>
+              </div>
+
               <div class="col">
                 <a href="{% url 'management:general_members'%}">
                   <div class="card h-100">
                       <div class="card-body membership-card">
                           <span class="material-symbols-outlined"> person</span>
-                          <h5 class="form-title">General <br>Members</h5>
+                          <h5 class="form-title">NGS <br>Members</h5>
                       </div>
                   </div>
                 </a>
               </div>
-              <div class="col">
-                <a href="{% url 'management:lifetime_members'%}">
-                  <div class="card h-100">
-                      <div class="card-body membership-card">
-                          <span class="material-symbols-outlined"> person</span>
-                          <h5 class="form-title">Lifetime Members</h5>
-                      </div>
-                  </div>
-                </a>
-              </div>
+
+              
 
               <div class="col">
                 <a href="{% url 'management:institutional_members'%}">
@@ -211,6 +216,17 @@
                 </a>
               </div>   
             </div>
+
+            <!-- <div class="col">
+              <a href="{% url 'management:lifetime_members'%}">
+                <div class="card h-100">
+                    <div class="card-body membership-card">
+                        <span class="material-symbols-outlined"> person</span>
+                        <h5 class="form-title">Lifetime Members</h5>
+                    </div>
+                </div>
+              </a>
+            </div> -->
 
           </div>
         </div>

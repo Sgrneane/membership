@@ -56,29 +56,39 @@
     </nav>
 
                     <div class=" container about-us-bg my-5 p-5">
-                        <h3 class="form-title">General Members</h3>
+                        <h3 class="form-title">Honorary Members</h3>
                         <hr>
 
                         <table id="sampleTable" class="table hover-table" style="width:100%">
                             <thead>
                                 <tr>
                                     
-                                    <th>Membership Number</th>
-                                    <th>Applicant Name</th>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Membership Type</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for member in members %}
+                            
                                 <tr>
                                     
-                                    <td>{{ member.membership_number }}</td>
-                                    <td>{{ member.name_of_applicant }}</td>
-                                    <td>{{ member.associated_user.email }}</td>
-                                    <td>{{ member.get_membership_type_display }} </td>
+                                    <td>Prof. Dr. Ikuo Towhata</td>
+                                    <td>towhata.ikuo.ikuo@gmail.com</td>
+                                    <td>Honorary Member</td>
                                 </tr> 
-                            {% endfor %}
+                                <tr>
+                                    
+                                    <td>Dr. Ganga Lal Tuladhar </td>
+                                    <td>gangalaltuladhar@gmail.com</td>
+                                    <td>Honorary Member</td>
+                                </tr> 
+                                <tr>
+                                  
+                                  <td>Dr. Anil Joseph </td>
+                                  <td>aniljoseph01@gmail.com</td>
+                                  <td>Honorary Member</td>
+                              </tr> 
+                            
                             </tbody>
                         </table>
                     </div>

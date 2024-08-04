@@ -359,10 +359,12 @@
             {% endif %}
             
             
-                    {% if request.user.role == 1 %}
-                    {% if membership.verification == False and membership.rejected == False %}
-                    <div class="mt-5">
-                        <h2 class="data">Please take further action for this membership.</h2>
+            {% if membership.verification == False and membership.rejected == False %}
+            <div class="mt-5">
+                <h2 class="detail-title">Upgrade Request</h2>
+                <h2 class="data">Please take further action for this membership.</h2>
+                <div class="row mt-3">
+                    <div class="col-md-5">
                         <div class="button-container mt-2 d-flex justify-content-start">
                             <button type="button" class="btn btn-secondary reject-btn me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
                             <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#verifyModal">Verify</button>
@@ -371,12 +373,19 @@
                             {% endif %}
                         </div>
                     </div>
-                    {% endif %}
-                    {% if membership.upgrade_request == True %}
-                    <h2 class="data">{{ membership.name_of_applicant }} is requesting to upgrade to {{ membership.get_upgrade_membership_type_display }}.Please Verify the upgrade request.</h2>
-                    <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#upgradeModal">Upgrade</button>
-                    {% endif %}
-                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            <div class="mt-5">
+                {% if membership.upgrade_request == True and membership.upgrade_payment == True %}
+                <h2 class="data">{{ membership.name_of_applicant }} is requesting to upgrade to {{ membership.get_upgrade_membership_type_display }}.Please Verify the upgrade request.</h2> <br>
+                <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#upgradeModal">Upgrade</button>
+                {% endif %}
+                {% if membership.renew_request == True and membership.renew_payment == True %}
+                <h2 class="data">{{ membership.name_of_applicant }} is requesting to renew to General Membership. Please Verify the Renew request.</h2> <br>
+                <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#renewModal">Renew Membership</button>
+                {% endif %}
+            </div>
 
                  <!-- Reject Modal -->
                  <div class="modal fade" id="rejectModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -457,6 +466,25 @@
                         </div>
                         </div>
                     </div>
+                    
+                    <!-- renew verify -->
+                    <div class="modal fade" id="renewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Renew Membership</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-prev" data-bs-dismiss="modal">Close</button>
+                            <a href="{% url 'management:verify_renew' id=membership.id %}"><button type="submit" class="btn btn-primary reject-btn">Renew</button></a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+
+                     <!-- Activity Log -->
                     {% if request.user.role == 1 %}
                         <h3 class="form-title mt-5">User Activity Logs</h3>
                         <hr>

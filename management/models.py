@@ -78,6 +78,9 @@ class Membership(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+        
+    def __str__(self):
+        return self.get_membership_type_display()
 
 #Gemeral Memberships
 class GeneralMembership(Membership,PersonalInfo):
@@ -87,6 +90,8 @@ class GeneralMembership(Membership,PersonalInfo):
     upgrade_request = models.BooleanField(null=True)
     upgrade_membership_type = models.PositiveIntegerField(choices=choices.MEMBERSHIP_TYPES,null=True)
     upgrade_payment = models.BooleanField(default=False)
+    renew_request =models.BooleanField(null=True, default=False)
+    renew_payment = models.BooleanField(default=False)
 
     def __str__(self):
         return self.associated_user.first_name

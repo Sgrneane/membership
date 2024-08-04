@@ -117,6 +117,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="accordion accordion-flush" id="upgradeRequest">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <li class="acc-li">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#upgrade-request"
+                                        aria-expanded="false" aria-controls="member-request">
+                                        <a href><span class="material-symbols-rounded me-2">
+                                                group_add
+                                            </span>Renew Request</a>
+                                    </button>
+                                </li>
+                            </h2>
+                            <div id="upgrade-request" class="accordion-collapse collapse"
+                                data-bs-parent="#upgradeRequest">
+                                <ul>
+                                    <li><a href="{% url 'management:general_renew_request_list' %}">General Member</a></li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
             
                     <li>
                         <a href={% url 'management:rejected_membership_list' %}><span class="material-symbols-rounded me-2">
