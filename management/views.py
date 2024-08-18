@@ -134,6 +134,16 @@ def user_dashboard(request):
             today = date.today()
             remaining_days = (membership.expiry_date - today).days if membership.expiry_date else None
             renew_upto = membership.expiry_date + timedelta(days=365)
+
+            # Send email if remaining days is 30
+            if remaining_days == 30:
+                subject = 'Your Membership is Expiring Soon'
+                context = {'user': membership.associated_user, 'expiry_date':membership.expiry_date}
+                message = render_to_string('management/email/expiry_mail.html', context) 
+                email = EmailMessage(subject, message, to=[membership.associated_user.email])
+                email.content_subtype = "html"  # Main content is now text/html
+                email.send()
+                
             
         context = {
             'general_membership_count': general_membership_count,
@@ -235,7 +245,7 @@ def complete_registration_educational_document(request,id):
 
             # Send email notification
             subject = "Registration complete"
-            context = {'user': member.associated_user}
+            context = {'user': member.associated_user, }
             message = render_to_string('management/email/registration_complete.html', context)           
             email = EmailMessage(subject, message, to=[member.associated_user.email])
             email.content_subtype = "html"  # Main content is now text/html

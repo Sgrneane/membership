@@ -240,10 +240,17 @@
                     {% if remaining_days is not None %}
                     <div class="row">
                         <div class="col">
+                            {% if remaining_days <= 30 %}
+                            <div class="alert alert-danger" role="alert">
+                                Your membership will expire in {{ remaining_days }} days ({{ membership.expiry_date }}).
+                                <strong><a href="{% url 'management:renew_general_membership' %}">Click here to renew your membership up to {{ renew_upto }}</a></strong>
+                            </div>
+                            {% else %}
                             <div class="alert alert-info" role="alert">
                                 Your membership will expire in {{ remaining_days }} days ({{ membership.expiry_date }}).
                                 <strong><a href="{% url 'management:renew_general_membership' %}">Click here to renew your membership up to {{ renew_upto }}</a></strong>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
